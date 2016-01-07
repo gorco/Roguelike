@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Enemy : MovingObject
+public class Enemy : MovingObject, Destuctible
 {
 	public int playerDamage;                            //The amount of food points to subtract from the player when attacking.
 
@@ -65,11 +65,20 @@ public class Enemy : MovingObject
 		AttemptMove<Player>(xDir, yDir);
 	}
 
+	//It takes a parameter loss which specifies how many points to lose.
+	public void LoseLife(int loss)
+	{
+	}
+
+	public void LoseLife(int str, int dex)
+	{
+	}
+
 	//OnCantMove is called if Enemy attempts to move into a space occupied by a Player, it overrides the OnCantMove function of MovingObject 
 	//and takes a generic parameter T which we use to pass in the component we expect to encounter, in this case Player
 	protected override void OnCantMove<T>(T component)
 	{
-		Player hitPlayer = component as Player;
+		Destuctible hitPlayer = component as Destuctible;
 
 		hitPlayer.LoseLife(playerDamage);
 		//Set the attack trigger of animator to trigger Enemy attack animation.
