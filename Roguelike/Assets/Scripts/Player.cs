@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 
 //Player inherits from MovingObject, our base class for objects that can move, Enemy also inherits from this.
-public class Player : MovingObject
+public class Player : MovingObject, Destuctible
 {
 	public float restartLevelDelay = 1f;        //Delay time in seconds to restart level.
 	public int pointsPerFood = 10;              //Number of points to add to player food points when picking up a food object.
@@ -19,7 +19,6 @@ public class Player : MovingObject
 	public AudioClip gameOverSound;
 
 	private Animator animator;                  //Used to store a reference to the Player's animator component.
-	private int life;                           //Used to store player life points total during level.
 
 	//Start overrides the Start function of MovingObject
 	protected override void Start()
@@ -28,6 +27,11 @@ public class Player : MovingObject
 
 		//Get the current food point total stored in GameManager.instance between levels.
 		life = GameManager.instance.playerLifePoints;
+		maxLife = GameManager.instance.playerMaxLifePoints;
+		str = GameManager.instance.playerStrPoints;
+		def = GameManager.instance.playerDefPoints;
+		dex = GameManager.instance.playerDexPoints;
+		spd = GameManager.instance.playerSpdPoints;
 
 		foodText.text = "Life: " + life;
 
@@ -40,6 +44,11 @@ public class Player : MovingObject
 	{
 		//When Player object is disabled, store the current local food total in the GameManager so it can be re-loaded in next level.
 		GameManager.instance.playerLifePoints = life;
+		GameManager.instance.playerMaxLifePoints = maxLife;
+		GameManager.instance.playerStrPoints = str;
+		GameManager.instance.playerDefPoints = def;
+		GameManager.instance.playerDexPoints = dex;
+		GameManager.instance.playerSpdPoints = spd;
 	}
 
 
@@ -68,7 +77,7 @@ public class Player : MovingObject
 		{
 			//Call AttemptMove passing in the generic parameter Wall, since that is what Player may interact with if they encounter one (by attacking it)
 			//Pass in horizontal and vertical as parameters to specify the direction to move Player in.
-			AttemptMove<Wall>(horizontal, vertical);
+			AttemptMove<Destuctible>(horizontal, vertical);
 		}
 	}
 
@@ -77,8 +86,9 @@ public class Player : MovingObject
 	protected override void AttemptMove<T>(int xDir, int yDir)
 	{
 		//Every time player moves, subtract from food points total.
-		//food--;
-		//foodText.text = "Food: " + food;
+		if(life > maxLife)
+			life--;
+		foodText.text = "Life: " + life;
 
 		base.AttemptMove<T>(xDir, yDir);
 
@@ -101,8 +111,8 @@ public class Player : MovingObject
 	//It takes a generic parameter T which in the case of Player is a Wall which the player can attack and destroy.
 	protected override void OnCantMove<T>(T component)
 	{
-		Wall hitWall = component as Wall;
-		hitWall.DamageWall(wallDamage);
+		Destuctible hitWall = component as Destuctible;
+		hitWall.LoseLife(wallDamage);
 
 		//Set the attack trigger of the player's animation controller in order to play the player's attack animation.
 		animator.SetTrigger("playerChop");
@@ -143,7 +153,7 @@ public class Player : MovingObject
 	}
 
 
-	//LoseFood is called when an enemy attacks the player.
+	//LoseLife is called when an enemy attacks the player.
 	//It takes a parameter loss which specifies how many points to lose.
 	public void LoseLife(int loss)
 	{
@@ -152,6 +162,17 @@ public class Player : MovingObject
 
 		life -= loss;
 		foodText.text = "-" + loss + "Life: " + life;
+
+		CheckIfGameOver();
+	}
+
+	public void LoseLife(int str, int dex)
+	{
+		//Set the trigger for the player animator to transition to the playerHit animation.
+		animator.SetTrigger("playerHit");
+
+		//life -= loss;
+		//foodText.text = "-" + loss + "Life: " + life;
 
 		CheckIfGameOver();
 	}

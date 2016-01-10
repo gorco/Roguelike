@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-public class Wall : MonoBehaviour
+public class Wall : MonoBehaviour, Destuctible
 {         
 	public Sprite dmgSprite;                    //Alternate sprite to display after Wall has been attacked by player.
 	public int hp = 3;                          //hit points for the wall.
@@ -18,7 +19,7 @@ public class Wall : MonoBehaviour
 
 
 	//DamageWall is called when the player attacks a wall.
-	public void DamageWall(int loss)
+	public void LoseLife(int loss)
 	{
 		SoundManager.instance.RandomizeSfx(chopSound1, chopSound2);
 		spriteRenderer.sprite = dmgSprite;
@@ -26,5 +27,9 @@ public class Wall : MonoBehaviour
 
 		if (hp <= 0)
 			gameObject.SetActive(false);
+	}
+
+	public void LoseLife(int str, int dex)
+	{
 	}
 }

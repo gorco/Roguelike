@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 
 	public float levelStartDelay = 2f;                      //Time to wait before starting level, in seconds.
 	public float turnDelay = 0.1f;                          //Delay between each Player turn.
-	public int playerLifePoints = 100;                      //Starting value for Player life points.
+	//public int playerLifePoints = 100;                      //Starting value for Player life points.
 
 	public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
 	public BoardManager boardScript;						//Store a reference to our BoardManager which will set up the level.
@@ -25,6 +25,12 @@ public class GameManager : MonoBehaviour
 
 	private bool doingSetup = true;                         //Boolean to check if we're setting up board, prevent Player from moving during setup.
 
+	public int playerMaxLifePoints;
+	public int playerLifePoints;
+	public int playerStrPoints;
+	public int playerDefPoints;
+	public int playerDexPoints;
+	public int playerSpdPoints;
 
 	void Awake()
 	{
@@ -42,6 +48,16 @@ public class GameManager : MonoBehaviour
 		InitGame();
 	}
 
+	void GenerateHero()
+	{
+		playerMaxLifePoints = 100;
+		playerLifePoints = 100;
+        playerStrPoints = 5;
+		playerDefPoints = 1;
+		playerDexPoints = 1;
+		playerSpdPoints = 1;
+	}
+
 	//This is called each time a scene is loaded.
 	void OnLevelWasLoaded(int index)
 	{
@@ -53,6 +69,10 @@ public class GameManager : MonoBehaviour
 	void InitGame()
 	{
 		doingSetup = true;
+		if(level == 1)
+		{
+			GenerateHero();
+		}
 
 		levelImage = GameObject.Find("LevelImage");
 		levelText = GameObject.Find("LevelText").GetComponent<Text>();
