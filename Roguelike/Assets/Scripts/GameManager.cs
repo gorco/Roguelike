@@ -140,7 +140,10 @@ public class GameManager : MonoBehaviour
 
 		for (int i = 0; i < enemies.Count; i++)
 		{
-			enemies[i].MoveEnemy();
+			if (enemies[i] != null)
+			{
+				enemies[i].MoveEnemy();
+			} 
 
 			//Wait for Enemy's moveTime before moving next Enemy, 
 			yield return new WaitForSeconds(enemies[i].moveTime);

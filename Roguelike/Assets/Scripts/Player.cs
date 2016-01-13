@@ -20,13 +20,6 @@ public class Player : MovingObject, Destuctible
 
 	private Animator animator;                  //Used to store a reference to the Player's animator component.
 
-	private int life;                           //Used to store player life points total during level.
-	private int maxLife;
-	private int str;
-	private int def;
-	private int dex;
-	private int spd;
-
 	//Start overrides the Start function of MovingObject
 	protected override void Start()
 	{
@@ -84,7 +77,7 @@ public class Player : MovingObject, Destuctible
 		{
 			//Call AttemptMove passing in the generic parameter Wall, since that is what Player may interact with if they encounter one (by attacking it)
 			//Pass in horizontal and vertical as parameters to specify the direction to move Player in.
-			AttemptMove<Wall>(horizontal, vertical);
+			AttemptMove<Destuctible>(horizontal, vertical);
 		}
 	}
 
@@ -108,11 +101,9 @@ public class Player : MovingObject, Destuctible
 			//Call RandomizeSfx of SoundManager to play the move sound, passing in two audio clips to choose from.
 			SoundManager.instance.RandomizeSfx(moveSound1, moveSound2);
 		}
-
 		CheckIfGameOver();
 		GameManager.instance.playersTurn = false;
 	}
-
 
 	//OnCantMove overrides the abstract function OnCantMove in MovingObject.
 	//It takes a generic parameter T which in the case of Player is a Wall which the player can attack and destroy.

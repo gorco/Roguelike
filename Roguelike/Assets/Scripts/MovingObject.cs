@@ -11,6 +11,13 @@ public abstract class MovingObject : MonoBehaviour
 	private Rigidbody2D rb2D;               //The Rigidbody2D component attached to this object.
 	private float inverseMoveTime;          //Used to make movement more efficient.
 
+	public int life;                     //Used to store player life points total during level.
+	public int maxLife;
+	public int str;
+	public int def;
+	public int dex;
+	public int spd;
+
 	protected virtual void Start()
 	{
 		boxCollider = GetComponent<BoxCollider2D>();
@@ -68,7 +75,7 @@ public abstract class MovingObject : MonoBehaviour
 	//The virtual keyword means AttemptMove can be overridden by inheriting classes using the override keyword.
 	//AttemptMove takes a generic parameter T to specify the type of component we expect our unit to interact with if blocked (Player for Enemies, Wall for Player).
 	protected virtual void AttemptMove<T>(int xDir, int yDir)
-		where T : Component
+		where T : Destuctible
 	{
 		RaycastHit2D hit;
 		bool canMove = Move(xDir, yDir, out hit);
@@ -85,6 +92,6 @@ public abstract class MovingObject : MonoBehaviour
 	//The abstract modifier indicates that the thing being modified has a missing or incomplete implementation.
 	//OnCantMove will be overriden by functions in the inheriting classes.
 	protected abstract void OnCantMove<T>(T component)
-		where T : Component;
+		where T : Destuctible;
 }
 

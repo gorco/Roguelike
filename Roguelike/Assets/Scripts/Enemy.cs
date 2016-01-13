@@ -67,11 +67,22 @@ public class Enemy : MovingObject, Destuctible
 
 	//It takes a parameter loss which specifies how many points to lose.
 	public void LoseLife(int loss)
-	{
+	{		
+		life -= loss;
+		Debug.Log("enemy lose life "+life);
+		CheckIfDie();
 	}
 
 	public void LoseLife(int str, int dex)
 	{
+	}
+
+	public void CheckIfDie()
+	{
+		if (life < 0)
+		{
+			DestroyObject(this.gameObject, 1);
+		}
 	}
 
 	//OnCantMove is called if Enemy attempts to move into a space occupied by a Player, it overrides the OnCantMove function of MovingObject 
