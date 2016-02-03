@@ -73,15 +73,15 @@ public class Enemy : MovingObject, Destuctible
 		CheckIfDie();
 	}
 
-	public void LoseLife(int str, int dex)
+	public void LoseLife(int str, int dex, int luc)
 	{
 	}
 
 	public void CheckIfDie()
 	{
-		if (life < 0)
+		if (life <= 0)
 		{
-			DestroyObject(this.gameObject, 1);
+			DestroyObject(this.gameObject, 0.25f);
 		}
 	}
 

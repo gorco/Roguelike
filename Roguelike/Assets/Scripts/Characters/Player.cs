@@ -7,7 +7,7 @@ public class Player : MovingObject, Destuctible
 	public float restartLevelDelay = 1f;        //Delay time in seconds to restart level.
 	public int pointsPerFood = 10;              //Number of points to add to player food points when picking up a food object.
 	public int pointsPerSoda = 20;              //Number of points to add to player food points when picking up a soda object.
-	public int wallDamage = 1;                  //How much damage a player does to a wall when chopping it.
+	public int damage = 1;                  //How much damage a player does to a wall when chopping it.
 	public Text foodText;
 
 	public AudioClip moveSound1;
@@ -32,6 +32,7 @@ public class Player : MovingObject, Destuctible
 		def = GameManager.instance.playerDefPoints;
 		dex = GameManager.instance.playerDexPoints;
 		spd = GameManager.instance.playerSpdPoints;
+		luc = GameManager.instance.playerLucPoints;
 
 		foodText.text = "Life: " + life;
 
@@ -49,6 +50,7 @@ public class Player : MovingObject, Destuctible
 		GameManager.instance.playerDefPoints = def;
 		GameManager.instance.playerDexPoints = dex;
 		GameManager.instance.playerSpdPoints = spd;
+		GameManager.instance.playerLucPoints = luc;
 	}
 
 
@@ -109,8 +111,8 @@ public class Player : MovingObject, Destuctible
 	//It takes a generic parameter T which in the case of Player is a Wall which the player can attack and destroy.
 	protected override void OnCantMove<T>(T component)
 	{
-		Destuctible hitWall = component as Destuctible;
-		hitWall.LoseLife(wallDamage);
+		Destuctible destuctible = component as Destuctible;
+		destuctible.LoseLife(damage);
 
 		//Set the attack trigger of the player's animation controller in order to play the player's attack animation.
 		animator.SetTrigger("playerChop");
@@ -124,6 +126,15 @@ public class Player : MovingObject, Destuctible
 		{
 			Invoke("Restart", restartLevelDelay);
 			enabled = false;
+		}
+
+		else if (other.tag == "Item")
+		{
+			if (Inventory.Inv.AddItem(other.GetComponent<Item>()))
+			{
+				SoundManager.instance.RandomizeSfx(eatSound1, eatSound2);
+				other.gameObject.SetActive(false);
+			}
 		}
 
 		else if (other.tag == "Food")
@@ -143,13 +154,11 @@ public class Player : MovingObject, Destuctible
 		}
 	}
 
-
 	//Restart reloads the scene when called.
 	private void Restart()
 	{
 		Application.LoadLevel(Application.loadedLevel);
 	}
-
 
 	//LoseLife is called when an enemy attacks the player.
 	//It takes a parameter loss which specifies how many points to lose.
@@ -164,7 +173,7 @@ public class Player : MovingObject, Destuctible
 		CheckIfGameOver();
 	}
 
-	public void LoseLife(int str, int dex)
+	public void LoseLife(int str, int dex, int luc)
 	{
 		//Set the trigger for the player animator to transition to the playerHit animation.
 		animator.SetTrigger("playerHit");
@@ -184,6 +193,17 @@ public class Player : MovingObject, Destuctible
 			SoundManager.instance.PlaySingle(gameOverSound);
 			SoundManager.instance.musicSource.Stop();
 			GameManager.instance.GameOver();
+		}
+	}
+
+	public void Use(Item item)
+	{
+		switch (item.itemType)
+		{
+			case ItemType.Consumable:
+				break;
+			default:
+				break;
 		}
 	}
 }

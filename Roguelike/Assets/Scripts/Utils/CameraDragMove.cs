@@ -12,14 +12,16 @@ public class CameraDragMove : MonoBehaviour
 	private Vector3 destination;
 
 	private bool Drag = false;
+	private bool drageable = true;
 
 	void Start()
 	{
 		ResetCamera = Camera.main.transform.position;
 	}
+
 	void LateUpdate()
 	{
-		if (Input.GetMouseButton(0))
+		if (Input.GetMouseButton(0) && drageable)
 		{
 			Diference = (Camera.main.ScreenToWorldPoint(Input.mousePosition)) - Camera.main.transform.position;
 			if (Drag == false)

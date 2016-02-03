@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 	//public int playerLifePoints = 100;                      //Starting value for Player life points.
 
 	public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
-	public BoardManager boardScript;						//Store a reference to our BoardManager which will set up the level.
+	public BoardManager boardScript;                        //Store a reference to our BoardManager which will set up the level.
 
 	[HideInInspector]
 	public bool playersTurn = true;                         //Boolean to check if it's players turn, hidden in inspector but public.
@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
 	public int playerDefPoints;
 	public int playerDexPoints;
 	public int playerSpdPoints;
+	public int playerLucPoints;
 
 	void Awake()
 	{
@@ -43,6 +44,7 @@ public class GameManager : MonoBehaviour
 		DontDestroyOnLoad(gameObject);
 		
 		enemies = new List<Enemy>();
+		
 
 		boardScript = GetComponent<BoardManager>();
 		InitGame();

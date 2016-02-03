@@ -29,7 +29,7 @@ public class Wall : MonoBehaviour, Destuctible
 			gameObject.SetActive(false);
 	}
 
-	public void LoseLife(int str, int dex)
+	public void LoseLife(int str, int dex, int luc)
 	{
 	}
 }

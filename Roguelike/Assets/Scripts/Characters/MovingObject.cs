@@ -17,6 +17,7 @@ public abstract class MovingObject : MonoBehaviour
 	public int def;
 	public int dex;
 	public int spd;
+	public int luc;
 
 	protected virtual void Start()
 	{
