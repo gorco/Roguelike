@@ -9,9 +9,18 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 	private Image img;
 	private Item item;
 
+	private bool specialized;
+	private ItemType spezialitation;
+
 	void Start()
 	{
 		img = this.transform.GetChild(0).GetComponentInChildren<Image>();
+	}
+
+	public void AddSpecialization(ItemType spezialitation)
+	{
+		this.spezialitation = spezialitation;
+		this.specialized = true;
 	}
 
 	public void AddItem(Item item)
@@ -24,18 +33,32 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 		return this.item;
 	}
 
-	public void ChangeItem(Item newItem)
+	public bool ChangeItem(Item newItem)
 	{
 		this.item = newItem;
-		if(newItem != null)
+		if (newItem != null)
 		{
-			img.sprite = item.itemSprite;
-			img.enabled = true;
-			return;
+			if (!specialized || spezialitation == newItem.itemType)
+			{
+				img.sprite = item.itemSprite;
+				img.enabled = true;
+				return true;
+			}
 		}
-		img.sprite = null;
-		img.enabled = false;
 
+		else
+		{
+			img.sprite = null;
+			img.enabled = false;
+		}
+
+		return false;
+
+	}
+
+	public void HideItem(Boolean hide)
+	{
+		this.img.enabled = !hide;
 	}
 
 	public void RemoveItem()
