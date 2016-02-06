@@ -34,24 +34,27 @@ public class Inventory : MonoBehaviour {
 
 	private UnityEngine.UI.Image inventoryBar;
 	public UnityEngine.UI.Image close;
+	public UnityEngine.UI.Image statsPanel;
 
 	public GameObject tooltipObject;
 	public Text sizeTextObject;
 	public Text visualTextObject;
 
+	private Text statsText;
 	private static GameObject tooltip;
 	private static Text sizeText;
 	private static Text visualText;
 
-	void Start ()
+	public static List<Slot> equipmentSlots = new List<Slot>(); 
+	void Awake ()
 	{
+		Inv = this;
+
 		tooltip = tooltipObject;
 		sizeText = sizeTextObject;
 		visualText = visualTextObject;
 
-		CreateInventoryLayout();
-
-		Inv = this;
+		CreateInventoryLayout();	
     }
 
 	private void CreateInventoryLayout()
@@ -90,8 +93,7 @@ public class Inventory : MonoBehaviour {
 		equipmentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, equipmentW);
 		equipmentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inventoryH);
 
-		equipmentRect.localPosition = new Vector3(-inventoryW + equipmentW/3, 0,0);
-		this.transform.position = this.transform.position + new Vector3(inventoryW / 2, 0, 0);
+		equipmentRect.localPosition = new Vector3(-inventoryW + equipmentW/2, 0,0);
 
 		//InventoryBar
 		inventoryBar = Instantiate(equipmentPrefab);
@@ -108,6 +110,13 @@ public class Inventory : MonoBehaviour {
 		RectTransform closeRect = close.GetComponent<RectTransform>();
 		closeRect.localPosition = new Vector3(barW/2-closeRect.sizeDelta.x-leftPad, 0, 0);
 
+		//StatsPanel 
+		RectTransform statsRect = statsPanel.GetComponent<RectTransform>();
+		statsRect.transform.SetParent(this.transform);
+		statsRect.localPosition = new Vector3(inventoryW/2, 0, 0);
+
+		statsText = statsPanel.GetComponentInChildren<Text>();
+
 		//Equipment Slots
 		orgX = -equipmentW / 2;
 
@@ -116,36 +125,44 @@ public class Inventory : MonoBehaviour {
 		helmetSlot.AddSpecialization(ItemType.Head);
 		helmetSlot.transform.SetParent(equipment.transform);
 		helmetSlot.GetComponent<RectTransform>().localPosition = new Vector3(orgX + outPading*2.5f + slotSize.x/2, orgY - outPading*2, 0);
+		equipmentSlots.Add(helmetSlot);
 
 		//Weapon slot
 		Slot weaponSlot = Instantiate(slotPrefab);
 		weaponSlot.AddSpecialization(ItemType.Weapon);
 		weaponSlot.transform.SetParent(equipment.transform);
 		weaponSlot.GetComponent<RectTransform>().localPosition = new Vector3(orgX + outPading * 2, orgY - outPading * 2 - slotSize.y - outPading, 0);
+		equipmentSlots.Add(weaponSlot);
 
 		//Shield slot
 		Slot shieldSlot = Instantiate(slotPrefab);
 		shieldSlot.AddSpecialization(ItemType.Shield);
 		shieldSlot.transform.SetParent(equipment.transform);
 		shieldSlot.GetComponent<RectTransform>().localPosition = new Vector3(orgX + outPading * 3 + slotSize.x, orgY - outPading * 2 - slotSize.y - outPading, 0);
+		equipmentSlots.Add(shieldSlot);
 
 		//Armor slot
 		Slot armorSlot = Instantiate(slotPrefab);
 		armorSlot.AddSpecialization(ItemType.Armor);
 		armorSlot.transform.SetParent(equipment.transform);
 		armorSlot.GetComponent<RectTransform>().localPosition = new Vector3(orgX + outPading * 2, orgY - outPading * 2 - (slotSize.y + outPading)*2, 0);
+		equipmentSlots.Add(armorSlot);
 
 		//Hands slot
 		Slot hadsSlot = Instantiate(slotPrefab);
 		hadsSlot.AddSpecialization(ItemType.Hands);
 		hadsSlot.transform.SetParent(equipment.transform);
 		hadsSlot.GetComponent<RectTransform>().localPosition = new Vector3(orgX + outPading * 3 + slotSize.x, orgY - outPading * 2 - (slotSize.y + outPading) * 2, 0);
+		equipmentSlots.Add(hadsSlot);
 
 		//Shoes slot
 		Slot shoesSlot = Instantiate(slotPrefab);
 		shoesSlot.AddSpecialization(ItemType.Shoes);
 		shoesSlot.transform.SetParent(equipment.transform);
 		shoesSlot.GetComponent<RectTransform>().localPosition = new Vector3(orgX + outPading * 2.5f + slotSize.x / 2, orgY - outPading * 2 - (slotSize.y + outPading) * 3, 0);
+		equipmentSlots.Add(shoesSlot);
+
+		this.transform.position = this.transform.position + new Vector3(outPading, 0, 0);
 	}
 
 	void Update()
@@ -259,7 +276,14 @@ public class Inventory : MonoBehaviour {
 			{
 				from.ChangeItem(tmp);
 			}
-			from.HideItem(false);
+			if (!from.IsEmpty())
+			{
+				from.HideItem(false);
+			}
+			if (to.IsSpecialized())
+			{
+				CalcStats();
+			}
 			ResetInventoryState();
 		}
 	}
@@ -275,5 +299,38 @@ public class Inventory : MonoBehaviour {
 	public void OpenInventory(bool open)
 	{
 		gameObject.SetActive(open);
+	}
+
+	public void updateStatsText(string text)
+	{
+		statsText.text = text;
+	}
+
+	public void CalcStats()
+	{
+		Debug.Log("Calc STaTS");
+		Player p = FindObjectOfType<Player>();
+		int maxLife = 0;
+		int str = 0;
+		int def = 0;
+		int dex = 0;
+		int spd = 0;
+		int luc = 0;
+
+		foreach (Slot slot in equipmentSlots)
+		{
+			if (!slot.IsEmpty())
+			{
+				Item item = slot.GetCurrentItem();
+				maxLife += item.maxLife;
+				str += item.str;
+				def += item.def;
+				dex += item.dex;
+				spd += item.spd;
+				luc += item.luc;
+			}
+		}
+
+		p.SetStats(maxLife, str, def, dex, spd, luc);
 	}
 }

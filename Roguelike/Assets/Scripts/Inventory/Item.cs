@@ -47,6 +47,7 @@ public class Item : MonoBehaviour {
 			case ItemType.Consumable:
 				break;
 			default:
+				Inventory.Inv.CalcStats();
 				break;
 		}
 

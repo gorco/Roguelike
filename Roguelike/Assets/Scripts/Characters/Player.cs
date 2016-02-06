@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 //Player inherits from MovingObject, our base class for objects that can move, Enemy also inherits from this.
@@ -8,7 +9,6 @@ public class Player : MovingObject, Destuctible
 	public int pointsPerFood = 10;              //Number of points to add to player food points when picking up a food object.
 	public int pointsPerSoda = 20;              //Number of points to add to player food points when picking up a soda object.
 	public int damage = 1;                  //How much damage a player does to a wall when chopping it.
-	public Text foodText;
 
 	public AudioClip moveSound1;
 	public AudioClip moveSound2;
@@ -18,6 +18,20 @@ public class Player : MovingObject, Destuctible
 	public AudioClip drinkSound2;
 	public AudioClip gameOverSound;
 
+	private int totalMaxLife;
+	private int totalStr;
+	private int totalDef;
+	private int totalDex;
+	private int totalSpd;
+	private int totalLuc;
+
+	public RectTransform healthTransform;
+	private float cachedY;
+	private float minXValue;
+	private float maxXValue;
+	public Text healthText;
+	public Image visualHealth;
+
 	private Animator animator;                  //Used to store a reference to the Player's animator component.
 
 	//Start overrides the Start function of MovingObject
@@ -25,18 +39,23 @@ public class Player : MovingObject, Destuctible
 	{
 		animator = GetComponent<Animator>();
 
+		cachedY = healthTransform.position.y;
+		maxXValue = healthTransform.position.x;
+		minXValue = healthTransform.position.x - healthTransform.rect.width;
+		
 		//Get the current food point total stored in GameManager.instance between levels.
-		life = GameManager.instance.playerLifePoints;
-		maxLife = GameManager.instance.playerMaxLifePoints;
+		SetBothHealth(GameManager.instance.playerLifePoints, GameManager.instance.playerMaxLifePoints);
 		str = GameManager.instance.playerStrPoints;
 		def = GameManager.instance.playerDefPoints;
 		dex = GameManager.instance.playerDexPoints;
 		spd = GameManager.instance.playerSpdPoints;
 		luc = GameManager.instance.playerLucPoints;
 
-		foodText.text = "Life: " + life;
+		//healthText.text = "Life: " + life;
 
 		base.Start();
+
+		Inventory.Inv.CalcStats();
 	}
 
 
@@ -52,7 +71,6 @@ public class Player : MovingObject, Destuctible
 		GameManager.instance.playerSpdPoints = spd;
 		GameManager.instance.playerLucPoints = luc;
 	}
-
 
 	private void Update()
 	{
@@ -83,14 +101,51 @@ public class Player : MovingObject, Destuctible
 		}
 	}
 
+	private void SetBothHealth(int current, int max)
+	{
+		maxLife = max;
+		life = current;
+		HandleHealth();
+	}
+
+	private void SetHealth(int value)
+	{
+		life = value;
+		HandleHealth();
+	}
+
+	private void SetMaxHealth(int value)
+	{
+		maxLife = value;
+		HandleHealth();
+	}
+
+	private void HandleHealth()
+	{
+		healthText.text = "Health: " + life;
+
+		float currentXValue = MapHealthValues(life, 0, maxLife, minXValue, maxXValue);
+
+		healthTransform.position = new Vector3(currentXValue, cachedY);
+
+		if(life > maxLife * .5f) //More health than 50%
+		{
+			visualHealth.color = new Color32((byte)MapHealthValues(life, maxLife / 2, maxLife, 255, 0), 255, 0, 255);
+		}
+		else //Health less than 50%
+		{
+			visualHealth.color = new Color32(255, (byte)MapHealthValues(life, 0, maxLife/2, 0, 255), 0, 255);
+		}
+	}
+
 	//AttemptMove overrides the AttemptMove function in the base class MovingObject
 	//AttemptMove takes a generic parameter T which for Player will be of the type Wall, it also takes integers for x and y direction to move in.
 	protected override void AttemptMove<T>(int xDir, int yDir)
 	{
 		//Every time player moves, subtract from food points total.
-		if(life > maxLife)
-			life--;
-		foodText.text = "Life: " + life;
+		//if(life > maxLife)
+		//	life--;
+		//healthText.text = "Life: " + life;
 
 		base.AttemptMove<T>(xDir, yDir);
 
@@ -139,16 +194,16 @@ public class Player : MovingObject, Destuctible
 
 		else if (other.tag == "Food")
 		{
-			life += pointsPerFood;
-			foodText.text = "+" + pointsPerFood + "Life: " + life;
+			SetHealth(life + pointsPerFood);
+			//healthText.text = "+" + pointsPerFood + "Life: " + life;
 			SoundManager.instance.RandomizeSfx(eatSound1, eatSound2);
 			other.gameObject.SetActive(false);
 		}
 
 		else if (other.tag == "Soda")
 		{
-			life += pointsPerSoda;
-			foodText.text = "+" + pointsPerSoda + "Life: " + life;
+			SetHealth(life + pointsPerSoda);
+			//healthText.text = "+" + pointsPerSoda + "Life: " + life;
 			SoundManager.instance.RandomizeSfx(drinkSound1, drinkSound2);
 			other.gameObject.SetActive(false);
 		}
@@ -167,8 +222,8 @@ public class Player : MovingObject, Destuctible
 		//Set the trigger for the player animator to transition to the playerHit animation.
 		animator.SetTrigger("playerHit");
 
-		life -= loss;
-		foodText.text = "-" + loss + "Life: " + life;
+		SetHealth(life - loss);
+		//healthText.text = "-" + loss + "Life: " + life;
 
 		CheckIfGameOver();
 	}
@@ -178,7 +233,7 @@ public class Player : MovingObject, Destuctible
 		//Set the trigger for the player animator to transition to the playerHit animation.
 		animator.SetTrigger("playerHit");
 
-		//life -= loss;
+		//SetHealth(life - loss);
 		//foodText.text = "-" + loss + "Life: " + life;
 
 		CheckIfGameOver();
@@ -205,5 +260,23 @@ public class Player : MovingObject, Destuctible
 			default:
 				break;
 		}
+	}
+
+	public void SetStats(int mLife, int str, int def, int dex, int spd, int luc)
+	{
+		this.totalMaxLife = this.maxLife + mLife;
+		this.totalStr = this.str + str;
+		this.totalDef = this.def + def;
+		this.totalDex = this.dex + dex;
+		this.totalSpd = this.spd + spd;
+		this.totalLuc = this.luc + luc;
+
+		Inventory.Inv.updateStatsText(string.Format("Life: {0}\nStrength: {1}\nDefense: {2}\nDexterity: {3}\nSpeed: {4}\nLuck: {5}",
+			this.totalMaxLife, this.totalStr, this.totalDef, this.totalDex, this.totalSpd, this.totalLuc));
+    }
+
+	public float MapHealthValues(float x, float inMin, float inMax, float outMin, float outMax)
+	{
+		return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 	}
 }

@@ -23,6 +23,11 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 		this.specialized = true;
 	}
 
+	public bool IsSpecialized()
+	{
+		return this.specialized;
+	}
+
 	public void AddItem(Item item)
 	{
 		ChangeItem(item);
