@@ -45,7 +45,10 @@ public class Inventory : MonoBehaviour {
 	private static Text sizeText;
 	private static Text visualText;
 
+	private CanvasGroup canvasGroup;
+
 	public static List<Slot> equipmentSlots = new List<Slot>(); 
+
 	void Awake ()
 	{
 		Inv = this;
@@ -54,8 +57,14 @@ public class Inventory : MonoBehaviour {
 		sizeText = sizeTextObject;
 		visualText = visualTextObject;
 
+		canvasGroup = GetComponent<CanvasGroup>();
 		CreateInventoryLayout();	
     }
+
+	void Start()
+	{
+		OpenInventory(false);
+	}
 
 	private void CreateInventoryLayout()
 	{
@@ -298,7 +307,13 @@ public class Inventory : MonoBehaviour {
 
 	public void OpenInventory(bool open)
 	{
-		gameObject.SetActive(open);
+		if (open && canvasGroup.alpha < 0.5f)
+		{
+			canvasGroup.alpha = 1f;
+        } else if(!open && canvasGroup.alpha >= 0.5f)
+		{
+			canvasGroup.alpha = 0f;
+		}
 	}
 
 	public void updateStatsText(string text)
