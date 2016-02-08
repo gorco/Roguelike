@@ -47,6 +47,8 @@ public class Inventory : MonoBehaviour {
 
 	private CanvasGroup canvasGroup;
 
+	private Vector3 oneSize = new Vector3(1, 1, 1);
+
 	public static List<Slot> equipmentSlots = new List<Slot>(); 
 
 	void Awake ()
@@ -86,6 +88,7 @@ public class Inventory : MonoBehaviour {
 			{
 				Slot slot = Instantiate(slotPrefab);
 				slot.transform.SetParent(this.gameObject.transform);
+				slot.transform.localScale = oneSize;
 				slot.GetComponent<RectTransform>().localPosition = new Vector3(orgX + outPading + (leftPad + slotSize.x) * column, orgY - outPading - (topPad + slotSize.y) * row, 0);
 				slotsList.Add(slot);
 				emptySlots++;
@@ -95,6 +98,7 @@ public class Inventory : MonoBehaviour {
 		//Equipment Panel
 		equipment = Instantiate(equipmentPrefab);
 		equipment.transform.SetParent(this.transform);
+		equipment.transform.localScale = oneSize;
 
 		float equipmentW = slotSize.x * 2 + outPading * 5;
 
@@ -107,6 +111,8 @@ public class Inventory : MonoBehaviour {
 		//InventoryBar
 		inventoryBar = Instantiate(equipmentPrefab);
 		inventoryBar.transform.SetParent(this.transform);
+		inventoryBar.transform.localScale = oneSize;
+
 		float barW = equipmentW + inventoryW + leftPad;
 
 		RectTransform barRect = inventoryBar.GetComponent<RectTransform>();
@@ -116,6 +122,7 @@ public class Inventory : MonoBehaviour {
 		barRect.localPosition = new Vector3(-(equipmentW+outPading)/2, (inventoryH + 36)/2, 0);
 
 		close.transform.SetParent(inventoryBar.transform);
+		close.transform.localScale = oneSize;
 		RectTransform closeRect = close.GetComponent<RectTransform>();
 		closeRect.localPosition = new Vector3(barW/2-closeRect.sizeDelta.x-leftPad, 0, 0);
 
@@ -131,43 +138,49 @@ public class Inventory : MonoBehaviour {
 
 		//Head slot
 		Slot helmetSlot = Instantiate(slotPrefab);
-		helmetSlot.AddSpecialization(ItemType.Head);
 		helmetSlot.transform.SetParent(equipment.transform);
+		helmetSlot.transform.localScale = oneSize;
+		helmetSlot.AddSpecialization(ItemType.Head);
 		helmetSlot.GetComponent<RectTransform>().localPosition = new Vector3(orgX + outPading*2.5f + slotSize.x/2, orgY - outPading*2, 0);
 		equipmentSlots.Add(helmetSlot);
 
 		//Weapon slot
 		Slot weaponSlot = Instantiate(slotPrefab);
-		weaponSlot.AddSpecialization(ItemType.Weapon);
 		weaponSlot.transform.SetParent(equipment.transform);
+		weaponSlot.transform.localScale = oneSize;
+		weaponSlot.AddSpecialization(ItemType.Weapon);
 		weaponSlot.GetComponent<RectTransform>().localPosition = new Vector3(orgX + outPading * 2, orgY - outPading * 2 - slotSize.y - outPading, 0);
 		equipmentSlots.Add(weaponSlot);
 
 		//Shield slot
 		Slot shieldSlot = Instantiate(slotPrefab);
-		shieldSlot.AddSpecialization(ItemType.Shield);
 		shieldSlot.transform.SetParent(equipment.transform);
+		shieldSlot.transform.localScale = oneSize;
+		shieldSlot.AddSpecialization(ItemType.Shield);
 		shieldSlot.GetComponent<RectTransform>().localPosition = new Vector3(orgX + outPading * 3 + slotSize.x, orgY - outPading * 2 - slotSize.y - outPading, 0);
 		equipmentSlots.Add(shieldSlot);
 
 		//Armor slot
 		Slot armorSlot = Instantiate(slotPrefab);
-		armorSlot.AddSpecialization(ItemType.Armor);
 		armorSlot.transform.SetParent(equipment.transform);
+		armorSlot.transform.localScale = oneSize;
+		armorSlot.AddSpecialization(ItemType.Armor);
 		armorSlot.GetComponent<RectTransform>().localPosition = new Vector3(orgX + outPading * 2, orgY - outPading * 2 - (slotSize.y + outPading)*2, 0);
 		equipmentSlots.Add(armorSlot);
 
 		//Hands slot
 		Slot hadsSlot = Instantiate(slotPrefab);
-		hadsSlot.AddSpecialization(ItemType.Hands);
 		hadsSlot.transform.SetParent(equipment.transform);
+		hadsSlot.transform.localScale = oneSize;
+		hadsSlot.AddSpecialization(ItemType.Gloves);
 		hadsSlot.GetComponent<RectTransform>().localPosition = new Vector3(orgX + outPading * 3 + slotSize.x, orgY - outPading * 2 - (slotSize.y + outPading) * 2, 0);
 		equipmentSlots.Add(hadsSlot);
 
 		//Shoes slot
 		Slot shoesSlot = Instantiate(slotPrefab);
-		shoesSlot.AddSpecialization(ItemType.Shoes);
 		shoesSlot.transform.SetParent(equipment.transform);
+		shoesSlot.transform.localScale = oneSize;
+		shoesSlot.AddSpecialization(ItemType.Boots);
 		shoesSlot.GetComponent<RectTransform>().localPosition = new Vector3(orgX + outPading * 2.5f + slotSize.x / 2, orgY - outPading * 2 - (slotSize.y + outPading) * 3, 0);
 		equipmentSlots.Add(shoesSlot);
 
@@ -246,6 +259,25 @@ public class Inventory : MonoBehaviour {
 	public void IncreaseEmptyCount()
 	{
 		emptySlots++;
+	}
+
+	private Slot GetSpecilizedSlot(ItemType type)
+	{
+		foreach (Slot slot in equipmentSlots)
+		{
+			if(slot.GetSpecialization() == type)
+			{
+				return slot;
+			}
+		}
+		return null;
+	}
+
+	public void EquipItem(Slot slot)
+	{
+		Slot spSlot = GetSpecilizedSlot(slot.GetCurrentItem().itemType);
+        MoveItem(slot.gameObject);
+		MoveItem(spSlot.gameObject);
 	}
 
 	public void MoveItem(GameObject clicked)

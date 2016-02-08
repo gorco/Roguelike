@@ -8,7 +8,6 @@ public class GameManager : MonoBehaviour
 
 	public float levelStartDelay = 2f;                      //Time to wait before starting level, in seconds.
 	public float turnDelay = 0.1f;                          //Delay between each Player turn.
-	//public int playerLifePoints = 100;                      //Starting value for Player life points.
 
 	public static GameManager instance = null;              //Static instance of GameManager which allows it to be accessed by any other script.
 	public BoardManager boardScript;                        //Store a reference to our BoardManager which will set up the level.
@@ -25,6 +24,7 @@ public class GameManager : MonoBehaviour
 
 	private bool doingSetup = true;                         //Boolean to check if we're setting up board, prevent Player from moving during setup.
 
+	public int playerHungry;
 	public int playerMaxLifePoints;
 	public int playerLifePoints;
 	public int playerStrPoints;
@@ -52,12 +52,14 @@ public class GameManager : MonoBehaviour
 
 	void GenerateHero()
 	{
+		playerHungry = 0;
 		playerMaxLifePoints = 100;
 		playerLifePoints = 100;
         playerStrPoints = 5;
 		playerDefPoints = 1;
 		playerDexPoints = 1;
 		playerSpdPoints = 1;
+		playerLucPoints = 1;
 	}
 
 	//This is called each time a scene is loaded.
@@ -78,7 +80,7 @@ public class GameManager : MonoBehaviour
 
 		levelImage = GameObject.Find("LevelImage");
 		levelText = GameObject.Find("LevelText").GetComponent<Text>();
-		levelText.text = "Day " + level;
+		levelText.text = "Floor - " + level;
 		levelImage.SetActive(true);
 
 		Invoke("HideLevelImage", levelStartDelay);
@@ -116,7 +118,7 @@ public class GameManager : MonoBehaviour
 	public void GameOver()
 	{
 		//Set levelText to display number of levels passed and game over message
-		levelText.text = "After " + level + " days, you starved.";
+		levelText.text = "After floor" + level + ", you died.";
 
 		//Enable black background image gameObject.
 		levelImage.SetActive(true);

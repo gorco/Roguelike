@@ -18,6 +18,7 @@ public class Player : MovingObject, Destuctible
 	public AudioClip drinkSound2;
 	public AudioClip gameOverSound;
 
+	private int hungry;
 	private int totalMaxLife;
 	private int totalStr;
 	private int totalDef;
@@ -42,8 +43,9 @@ public class Player : MovingObject, Destuctible
 		cachedY = healthTransform.position.y;
 		maxXValue = healthTransform.position.x;
 		minXValue = healthTransform.position.x - healthTransform.rect.width;
-		
-		//Get the current food point total stored in GameManager.instance between levels.
+
+		//Get the current stats stored in GameManager.instance between levels.
+		hungry = GameManager.instance.playerHungry;
 		SetBothHealth(GameManager.instance.playerLifePoints, GameManager.instance.playerMaxLifePoints);
 		str = GameManager.instance.playerStrPoints;
 		def = GameManager.instance.playerDefPoints;
@@ -62,7 +64,8 @@ public class Player : MovingObject, Destuctible
 	//This function is called when the behaviour becomes disabled or inactive.
 	private void OnDisable()
 	{
-		//When Player object is disabled, store the current local food total in the GameManager so it can be re-loaded in next level.
+		//When Player object is disabled, store the current stats in the GameManager so it can be re-loaded in next level.
+		GameManager.instance.playerHungry = hungry;
 		GameManager.instance.playerLifePoints = life;
 		GameManager.instance.playerMaxLifePoints = maxLife;
 		GameManager.instance.playerStrPoints = str;
@@ -124,17 +127,17 @@ public class Player : MovingObject, Destuctible
 	{
 		healthText.text = "Health: " + life;
 
-		float currentXValue = MapHealthValues(life, 0, maxLife, minXValue, maxXValue);
+		float currentXValue = MapHealthValues(life, 0, totalMaxLife, minXValue, maxXValue);
 
-		healthTransform.position = new Vector3(currentXValue, cachedY);
+		healthTransform.position = new Vector3(currentXValue, cachedY, 0);
 
 		if(life > maxLife * .5f) //More health than 50%
 		{
-			visualHealth.color = new Color32((byte)MapHealthValues(life, maxLife / 2, maxLife, 255, 0), 255, 0, 255);
+			visualHealth.color = new Color32((byte)MapHealthValues(life, totalMaxLife / 2, totalMaxLife, 255, 0), 255, 0, 255);
 		}
 		else //Health less than 50%
 		{
-			visualHealth.color = new Color32(255, (byte)MapHealthValues(life, 0, maxLife/2, 0, 255), 0, 255);
+			visualHealth.color = new Color32(255, (byte)MapHealthValues(life, 0, totalMaxLife / 2, 0, 255), 0, 255);
 		}
 	}
 
@@ -142,10 +145,17 @@ public class Player : MovingObject, Destuctible
 	//AttemptMove takes a generic parameter T which for Player will be of the type Wall, it also takes integers for x and y direction to move in.
 	protected override void AttemptMove<T>(int xDir, int yDir)
 	{
-		//Every time player moves, subtract from food points total.
-		//if(life > maxLife)
-		//	life--;
-		//healthText.text = "Life: " + life;
+		//Every time player moves, the hungry is increased.
+		if (hungry < 40)
+		{
+			Debug.Log("AumentandoHambre");
+			hungry++; 
+		} else
+		{
+			Debug.Log("QuitandoVida");
+			SetHealth(--life);
+			Debug.Log("life"+life);
+		}
 
 		base.AttemptMove<T>(xDir, yDir);
 
@@ -160,6 +170,11 @@ public class Player : MovingObject, Destuctible
 		}
 		CheckIfGameOver();
 		GameManager.instance.playersTurn = false;
+	}
+
+	public void Eat(int hungry)
+	{
+		this.hungry -= hungry;
 	}
 
 	//OnCantMove overrides the abstract function OnCantMove in MovingObject.
@@ -191,28 +206,23 @@ public class Player : MovingObject, Destuctible
 				other.gameObject.SetActive(false);
 			}
 		}
-
-		else if (other.tag == "Food")
-		{
-			SetHealth(life + pointsPerFood);
-			//healthText.text = "+" + pointsPerFood + "Life: " + life;
-			SoundManager.instance.RandomizeSfx(eatSound1, eatSound2);
-			other.gameObject.SetActive(false);
-		}
-
-		else if (other.tag == "Soda")
-		{
-			SetHealth(life + pointsPerSoda);
-			//healthText.text = "+" + pointsPerSoda + "Life: " + life;
-			SoundManager.instance.RandomizeSfx(drinkSound1, drinkSound2);
-			other.gameObject.SetActive(false);
-		}
 	}
 
 	//Restart reloads the scene when called.
 	private void Restart()
 	{
 		Application.LoadLevel(Application.loadedLevel);
+	}
+
+	public void ObtainLife(int life)
+	{
+		if (this.life + life <= this.maxLife)
+		{
+			SetHealth(this.life + life);
+		} else
+		{
+			SetHealth(this.maxLife);
+		}
 	}
 
 	//LoseLife is called when an enemy attacks the player.
@@ -223,7 +233,6 @@ public class Player : MovingObject, Destuctible
 		animator.SetTrigger("playerHit");
 
 		SetHealth(life - loss);
-		//healthText.text = "-" + loss + "Life: " + life;
 
 		CheckIfGameOver();
 	}
@@ -233,8 +242,15 @@ public class Player : MovingObject, Destuctible
 		//Set the trigger for the player animator to transition to the playerHit animation.
 		animator.SetTrigger("playerHit");
 
-		//SetHealth(life - loss);
-		//foodText.text = "-" + loss + "Life: " + life;
+		int loss = Random.Range(str - this.totalDef, str - this.totalDef / 2);
+		if (Random.Range(0, 1) < Mathf.Min(0.4f, dex * 1.5f / this.totalSpd))
+		{
+			if (Random.Range(0, 1) < luc / this.luc)
+				loss += loss;
+
+			SetHealth(life - loss);
+		}
+		
 
 		CheckIfGameOver();
 	}
@@ -273,7 +289,10 @@ public class Player : MovingObject, Destuctible
 
 		Inventory.Inv.updateStatsText(string.Format("Life: {0}\nStrength: {1}\nDefense: {2}\nDexterity: {3}\nSpeed: {4}\nLuck: {5}",
 			this.totalMaxLife, this.totalStr, this.totalDef, this.totalDex, this.totalSpd, this.totalLuc));
-    }
+
+		healthText.text = "Health: " + life;
+		HandleHealth();
+	}
 
 	public float MapHealthValues(float x, float inMin, float inMax, float outMin, float outMax)
 	{

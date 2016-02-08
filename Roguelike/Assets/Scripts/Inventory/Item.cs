@@ -4,11 +4,12 @@ public enum ItemType
 {
 	Head,
 	Armor,
-	Hands,
-	Shoes,
+	Gloves,
+	Boots,
 	Weapon,
 	Shield,
-	Consumable
+	Consumable,
+	Potions
 }
 
 public enum Quality
@@ -31,6 +32,7 @@ public class Item : MonoBehaviour {
 	public int power;
 	public int value;
 
+	public int hungry;
 	public int life;
 	public int maxLife;
 	public int str;
@@ -39,19 +41,44 @@ public class Item : MonoBehaviour {
 	public int spd;
 	public int luc;
 
-	public bool Use ()
+	public void Use ()
 	{
-		Debug.Log("UsingItem");
 		switch (itemType)
 		{
 			case ItemType.Consumable:
+				GameObject.Find("Player").GetComponent<Player>().Eat(hungry);
+				break;
+			case ItemType.Potions:
+				GameObject.Find("Player").GetComponent<Player>().ObtainLife(life);
 				break;
 			default:
-				Inventory.Inv.CalcStats();
 				break;
 		}
+	}
 
-		return true;
+	public bool CanBeEquiped()
+	{
+		if (itemType != ItemType.Consumable && itemType != ItemType.Potions)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	public bool CanBeConsumed()
+	{
+		if (itemType == ItemType.Consumable || itemType == ItemType.Potions)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	public bool CanBeUsed()
+	{
+		return false;
 	}
 
 	public string GetTooltip()

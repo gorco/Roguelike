@@ -23,6 +23,11 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 		this.specialized = true;
 	}
 
+	public ItemType GetSpecialization()
+	{
+		return this.spezialitation;
+	}
+
 	public bool IsSpecialized()
 	{
 		return this.specialized;
@@ -81,11 +86,20 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 	{
 		if (!IsEmpty())
 		{
-			if (item.Use())
+			if (item.CanBeEquiped())
 			{
+				Inventory.Inv.EquipItem(this);
+			} 
+			else if (item.CanBeConsumed())
+			{
+				item.Use();
 				Inventory.Inv.IncreaseEmptyCount();
 				item = null;
 				img.enabled = false;
+			}
+			else if (item.CanBeUsed())
+			{
+
 			}
 		}
 	}
