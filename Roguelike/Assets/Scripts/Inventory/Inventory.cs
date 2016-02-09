@@ -53,18 +53,19 @@ public class Inventory : MonoBehaviour {
 
 	void Awake ()
 	{
-		Inv = this;
+			Inv = this;
 
-		tooltip = tooltipObject;
-		sizeText = sizeTextObject;
-		visualText = visualTextObject;
+			tooltip = tooltipObject;
+			sizeText = sizeTextObject;
+			visualText = visualTextObject;
 
-		canvasGroup = GetComponent<CanvasGroup>();
-		CreateInventoryLayout();	
+			canvasGroup = GetComponent<CanvasGroup>();
+			CreateInventoryLayout();
     }
 
 	void Start()
 	{
+		
 		OpenInventory(false);
 	}
 
@@ -355,7 +356,6 @@ public class Inventory : MonoBehaviour {
 
 	public void CalcStats()
 	{
-		Debug.Log("Calc STaTS");
 		Player p = FindObjectOfType<Player>();
 		int maxLife = 0;
 		int str = 0;

@@ -148,13 +148,10 @@ public class Player : MovingObject, Destuctible
 		//Every time player moves, the hungry is increased.
 		if (hungry < 40)
 		{
-			Debug.Log("AumentandoHambre");
 			hungry++; 
 		} else
 		{
-			Debug.Log("QuitandoVida");
 			SetHealth(--life);
-			Debug.Log("life"+life);
 		}
 
 		base.AttemptMove<T>(xDir, yDir);
@@ -216,12 +213,12 @@ public class Player : MovingObject, Destuctible
 
 	public void ObtainLife(int life)
 	{
-		if (this.life + life <= this.maxLife)
+		if (this.life + life <= this.totalMaxLife)
 		{
 			SetHealth(this.life + life);
 		} else
 		{
-			SetHealth(this.maxLife);
+			SetHealth(this.totalMaxLife);
 		}
 	}
 
@@ -243,10 +240,14 @@ public class Player : MovingObject, Destuctible
 		animator.SetTrigger("playerHit");
 
 		int loss = Random.Range(str - this.totalDef, str - this.totalDef / 2);
-		if (Random.Range(0, 1) < Mathf.Min(0.4f, dex * 1.5f / this.totalSpd))
+
+		if (Random.Range(0, 1) < 1-Mathf.Clamp(this.totalSpd/(dex * 1.5f), 0f, 0.7f))
 		{
-			if (Random.Range(0, 1) < luc / this.luc)
+			if (Random.Range(0, 1) < 1 - Mathf.Clamp(luc / this.totalLuc, 0f, 1f))
+			{
 				loss += loss;
+				
+			}
 
 			SetHealth(life - loss);
 		}

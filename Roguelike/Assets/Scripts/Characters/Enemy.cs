@@ -38,7 +38,7 @@ public class Enemy : MovingObject, Destuctible
 			return;
 
 		}
-		Debug.Log("Enemy " + xDir + "/" + yDir);
+		//Debug.Log("Enemy " + xDir + "/" + yDir);
 		base.AttemptMove<T>(xDir, yDir);
 		//skipMove = true;
 	}
@@ -90,8 +90,8 @@ public class Enemy : MovingObject, Destuctible
 	protected override void OnCantMove<T>(T component)
 	{
 		Destuctible hitPlayer = component as Destuctible;
-
-		hitPlayer.LoseLife(playerDamage);
+		Debug.Log("EnemyStats = " + str + "," + dex + "," + luc);
+		hitPlayer.LoseLife(str, dex, luc);
 		//Set the attack trigger of animator to trigger Enemy attack animation.
 		animator.SetTrigger("enemyAttack");
 

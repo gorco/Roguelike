@@ -46,7 +46,9 @@ public class Item : MonoBehaviour {
 		switch (itemType)
 		{
 			case ItemType.Consumable:
-				GameObject.Find("Player").GetComponent<Player>().Eat(hungry);
+				Player p = GameObject.Find("Player").GetComponent<Player>();
+				p.Eat(hungry);
+				p.ObtainLife(life);
 				break;
 			case ItemType.Potions:
 				GameObject.Find("Player").GetComponent<Player>().ObtainLife(life);
