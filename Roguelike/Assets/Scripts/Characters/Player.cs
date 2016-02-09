@@ -56,8 +56,8 @@ public class Player : MovingObject, Destuctible
 		//healthText.text = "Life: " + life;
 
 		base.Start();
-
 		Inventory.Inv.CalcStats();
+		Inventory.Inv.LoadInventory();	
 	}
 
 
@@ -191,6 +191,7 @@ public class Player : MovingObject, Destuctible
 	{
 		if (other.tag == "Exit")
 		{
+			Inventory.Inv.SaveInventory();
 			Invoke("Restart", restartLevelDelay);
 			enabled = false;
 		}

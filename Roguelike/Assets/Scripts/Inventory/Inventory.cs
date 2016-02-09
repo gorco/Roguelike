@@ -15,7 +15,7 @@ public class Inventory : MonoBehaviour {
 	public GameObject iconPrefab;
 
 	private float inventoryW, inventoryH;
-	private List<Slot> slotsList = new List<Slot>();
+	private List<Slot> slotsList;
 
 	private static Slot from, to;
 
@@ -49,18 +49,41 @@ public class Inventory : MonoBehaviour {
 
 	private Vector3 oneSize = new Vector3(1, 1, 1);
 
-	public static List<Slot> equipmentSlots = new List<Slot>(); 
+	public static List<Slot> equipmentSlots = new List<Slot>();
+
+	public GameObject[] potionsTiles;
+
+	public GameObject[] consumibleTiles1;                           //Array of consumible prefabs.
+	public GameObject[] equipmentTiles1;                            //Array of equipment prefabs.
+	public GameObject[] weaponsTiles1;                              //Array of weapons prefabs.
+
+	public GameObject[] consumibleTiles2;                           //Array of consumible prefabs.
+	public GameObject[] equipmentTiles2;                            //Array of equipment prefabs.
+	public GameObject[] weaponsTiles2;                              //Array of weapons prefabs.
+
+	public GameObject[] consumibleTiles3;                           //Array of consumible prefabs.
+	public GameObject[] equipmentTiles3;                            //Array of equipment prefabs.
+	public GameObject[] weaponsTiles3;                              //Array of weapons prefabs.
+
+	public GameObject[] consumibleTiles4;                           //Array of consumible prefabs.
+	public GameObject[] equipmentTiles4;                            //Array of equipment prefabs.
+	public GameObject[] weaponsTiles4;                              //Array of weapons prefabs.
+
+	public GameObject[] consumibleTiles5;                           //Array of consumible prefabs.
+	public GameObject[] equipmentTiles5;                            //Array of equipment prefabs.
+	public GameObject[] weaponsTiles5;                              //Array of weapons prefabs.
 
 	void Awake ()
 	{
-			Inv = this;
+		Inv = this;
+		slotsList = new List<Slot>();
 
-			tooltip = tooltipObject;
-			sizeText = sizeTextObject;
-			visualText = visualTextObject;
+		tooltip = tooltipObject;
+		sizeText = sizeTextObject;
+		visualText = visualTextObject;
 
-			canvasGroup = GetComponent<CanvasGroup>();
-			CreateInventoryLayout();
+		canvasGroup = GetComponent<CanvasGroup>();
+		CreateInventoryLayout();
     }
 
 	void Start()
@@ -379,5 +402,271 @@ public class Inventory : MonoBehaviour {
 		}
 
 		p.SetStats(maxLife, str, def, dex, spd, luc);
+	}
+
+	public void SaveInventory()
+	{
+		string content = string.Empty;
+
+		for (int i = 0; i < slotsList.Count; i++)
+		{
+			if (!slotsList[i].IsEmpty())
+			{
+				Item item = slotsList[i].GetCurrentItem();
+				//[0] = slotPosition
+				//[1] = itemName
+				//[2] = itemType
+				//[3] = itemPower
+				content += i + "/" + item.itemName + "/" + item.itemType.ToString() + "/" + item.power + ";";
+			}
+			else
+			{
+				content += i + "/" + "empty;";
+			}
+		}
+
+		string equipment = string.Empty;
+		for (int i = 0; i < equipmentSlots.Count; i++)
+		{
+			if (!equipmentSlots[i].IsEmpty())
+			{
+				Item item = equipmentSlots[i].GetCurrentItem();
+				//[0] = slotPosition
+				//[1] = itemName
+				//[2] = itemType
+				//[3] = itemPower
+				content += i + "/" + item.itemName + "/" + item.itemType.ToString() + "/" + item.power;
+			}
+			else
+			{
+				content += i + "/" + "empty;";
+			}
+		}
+
+		PlayerPrefs.SetString(gameObject.name + "content", content);
+		PlayerPrefs.SetString(equipmentPrefab.name + "content", content);
+		PlayerPrefs.Save();
+	}
+
+	public void LoadInventory()
+	{
+		/*
+		string equipment = PlayerPrefs.GetString(equipmentPrefab.name + "content");
+		if(equipment != string.Empty)
+		{
+			string[] splitEquipment = equipment.Split(';');
+			foreach(string savedItem in splitEquipment)
+			{
+				string[] splitValues = savedItem.Split('-');
+				if (!splitValues[1].Equals("empty"))
+				{
+					slotsList[int.Parse(splitValues[0])].AddItem(GetItemInstance(splitValues[1], splitValues[2], int.Parse(splitValues[3])));
+				}
+			}
+		}*/
+
+		string content = PlayerPrefs.GetString(gameObject.name + "content");
+		if (content != string.Empty)
+		{
+			string[] splitEquipment = content.Split(';');
+			foreach (string savedItem in splitEquipment)
+			{
+				if (!string.IsNullOrEmpty(savedItem))
+				{
+					string[] splitValues = savedItem.Split('/');
+					if (splitValues[1]!="empty")
+					{
+						Item item = GetItemInstance(splitValues[1], splitValues[2], int.Parse(splitValues[3]));
+						if (item != null)
+						{
+							slotsList[int.Parse(splitValues[0])].AddItem(item);
+							item.gameObject.SetActive(false);
+						}
+					} 
+				}
+			}
+		}
+	}
+
+	private Item GetItemInstance(string name, string type, int power)
+	{
+		if (type.Equals(ItemType.Potions.ToString()))
+		{
+			foreach (GameObject item in potionsTiles)
+			{
+				if (item.GetComponent<Item>().itemName.Equals(name))
+				{
+					return Instantiate<GameObject>(item).GetComponent<Item>();
+				}
+			}
+			return null;
+		}
+
+		switch (power)
+		{
+			case 1:
+				if (type.Equals(ItemType.Consumable.ToString()))
+				{
+					foreach (GameObject item in consumibleTiles1)
+					{
+						if (item.GetComponent<Item>().itemName.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				else if (type.Equals(ItemType.Weapon.ToString()) || type.Equals(ItemType.Shield.ToString()))
+				{
+					foreach (GameObject item in weaponsTiles1)
+					{
+						if (item.GetComponent<Item>().itemName.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				else //Equipment
+				{
+					foreach (GameObject item in equipmentTiles1)
+					{
+						if (item.GetComponent<Item>().itemName.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				break;
+			case 2:
+				if (type.Equals(ItemType.Consumable.ToString()))
+				{
+					foreach (GameObject item in consumibleTiles2)
+					{
+						if (item.GetComponent<Item>().itemName.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				else if (type.Equals(ItemType.Weapon.ToString()) || type.Equals(ItemType.Shield.ToString()))
+				{
+					foreach (GameObject item in weaponsTiles2)
+					{
+						if (item.GetComponent<Item>().itemName.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				else //Equipment
+				{
+					foreach (GameObject item in equipmentTiles2)
+					{
+						if (item.GetComponent<Item>().itemName.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				break;
+			case 3:
+				if (type.Equals(ItemType.Consumable.ToString()))
+				{
+					foreach (GameObject item in consumibleTiles3)
+					{
+						if (item.GetComponent<Item>().itemName.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				else if (type.Equals(ItemType.Weapon.ToString()) || type.Equals(ItemType.Shield.ToString()))
+				{
+					foreach (GameObject item in weaponsTiles3)
+					{
+						if (item.GetComponent<Item>().itemName.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				else //Equipment
+				{
+					foreach (GameObject item in equipmentTiles3)
+					{
+						if (item.GetComponent<Item>().itemName.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				break;
+			case 4:
+				if (type.Equals(ItemType.Consumable.ToString()))
+				{
+					foreach (GameObject item in consumibleTiles4)
+					{
+						if (item.name.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				else if (type.Equals(ItemType.Weapon.ToString()) || type.Equals(ItemType.Shield.ToString()))
+				{
+					foreach (GameObject item in weaponsTiles4)
+					{
+						if (item.name.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				else //Equipment
+				{
+					foreach (GameObject item in equipmentTiles4)
+					{
+						if (item.name.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				break;
+			case 5:
+				if (type.Equals(ItemType.Consumable.ToString()))
+				{
+					foreach (GameObject item in consumibleTiles5)
+					{
+						if (item.name.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				else if (type.Equals(ItemType.Weapon.ToString()) || type.Equals(ItemType.Shield.ToString()))
+				{
+					foreach (GameObject item in weaponsTiles5)
+					{
+						if (item.name.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				else //Equipment
+				{
+					foreach (GameObject item in equipmentTiles5)
+					{
+						if (item.name.Equals(name))
+						{
+							return Instantiate<GameObject>(item).GetComponent<Item>();
+						}
+					}
+				}
+				break;
+			default:
+				break;
+		}
+		return null;
 	}
 }

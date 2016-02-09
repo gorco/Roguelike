@@ -14,7 +14,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 
 	void Start()
 	{
-		img = this.transform.GetChild(0).GetComponentInChildren<Image>();
+		this.img = this.transform.GetChild(0).GetComponentInChildren<Image>();
 	}
 
 	public void AddSpecialization(ItemType spezialitation)
@@ -50,16 +50,20 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 		{
 			if (!specialized || spezialitation == newItem.itemType)
 			{
-				img.sprite = item.itemSprite;
-				img.enabled = true;
+				if(this.img == null)
+				{
+					this.img = this.transform.GetChild(0).GetComponent<Image>();
+				}
+				this.img.enabled = true;
+				this.img.sprite = item.itemSprite;
 				return true;
 			}
 		}
 
 		else
 		{
-			img.sprite = null;
-			img.enabled = false;
+			this.img.sprite = null;
+			this.img.enabled = false;
 		}
 
 		return false;
