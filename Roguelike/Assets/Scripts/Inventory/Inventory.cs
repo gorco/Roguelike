@@ -49,7 +49,7 @@ public class Inventory : MonoBehaviour {
 
 	private Vector3 oneSize = new Vector3(1, 1, 1);
 
-	public static List<Slot> equipmentSlots = new List<Slot>();
+	private List<Slot> equipmentSlots;
 
 	public GameObject[] potionsTiles;
 
@@ -77,6 +77,7 @@ public class Inventory : MonoBehaviour {
 	{
 		Inv = this;
 		slotsList = new List<Slot>();
+		equipmentSlots = new List<Slot>();
 
 		tooltip = tooltipObject;
 		sizeText = sizeTextObject;
