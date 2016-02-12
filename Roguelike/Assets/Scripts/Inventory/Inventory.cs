@@ -89,7 +89,6 @@ public class Inventory : MonoBehaviour {
 
 	void Start()
 	{
-		
 		OpenInventory(false);
 	}
 
@@ -367,9 +366,13 @@ public class Inventory : MonoBehaviour {
 		if (open && canvasGroup.alpha < 0.5f)
 		{
 			canvasGroup.alpha = 1f;
-        } else if(!open && canvasGroup.alpha >= 0.5f)
+			canvasGroup.interactable = true;
+			canvasGroup.blocksRaycasts = true;
+		} else if(!open && canvasGroup.alpha >= 0.5f)
 		{
 			canvasGroup.alpha = 0f;
+			canvasGroup.interactable = false;
+			canvasGroup.blocksRaycasts = false;
 		}
 	}
 
@@ -436,41 +439,51 @@ public class Inventory : MonoBehaviour {
 				//[1] = itemName
 				//[2] = itemType
 				//[3] = itemPower
-				content += i + "/" + item.itemName + "/" + item.itemType.ToString() + "/" + item.power;
+				equipment += i + "/" + item.itemName + "/" + item.itemType.ToString() + "/" + item.power + ";";
 			}
 			else
 			{
-				content += i + "/" + "empty;";
+				equipment += i + "/" + "empty;";
 			}
 		}
 
+		Debug.Log("EQUIP CONTENT \n" + equipment);
 		PlayerPrefs.SetString(gameObject.name + "content", content);
-		PlayerPrefs.SetString(equipmentPrefab.name + "content", content);
+		PlayerPrefs.SetString(equipmentPrefab.name + "content", equipment);
 		PlayerPrefs.Save();
 	}
 
 	public void LoadInventory()
 	{
-		/*
+		
 		string equipment = PlayerPrefs.GetString(equipmentPrefab.name + "content");
+		Debug.Log("EQUIP CONTENT \n" + equipment);
 		if(equipment != string.Empty)
 		{
 			string[] splitEquipment = equipment.Split(';');
 			foreach(string savedItem in splitEquipment)
 			{
-				string[] splitValues = savedItem.Split('-');
-				if (!splitValues[1].Equals("empty"))
+				if (!string.IsNullOrEmpty(savedItem))
 				{
-					slotsList[int.Parse(splitValues[0])].AddItem(GetItemInstance(splitValues[1], splitValues[2], int.Parse(splitValues[3])));
+					string[] splitValues = savedItem.Split('/');
+					if (!splitValues[1].Equals("empty"))
+					{
+						Item item = GetItemInstance(splitValues[1], splitValues[2], int.Parse(splitValues[3]));
+						if (item != null)
+						{
+							equipmentSlots[int.Parse(splitValues[0])].AddItem(item);
+							item.gameObject.SetActive(false);
+						}
+					}
 				}
 			}
-		}*/
+		}
 
 		string content = PlayerPrefs.GetString(gameObject.name + "content");
 		if (content != string.Empty)
 		{
-			string[] splitEquipment = content.Split(';');
-			foreach (string savedItem in splitEquipment)
+			string[] splitContent = content.Split(';');
+			foreach (string savedItem in splitContent)
 			{
 				if (!string.IsNullOrEmpty(savedItem))
 				{
