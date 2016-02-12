@@ -35,6 +35,7 @@ public class BoardManager : MonoBehaviour
 	public GameObject[] floorTiles;                                 //Array of floor prefabs.
 	public GameObject[] wallTiles;                                  //Array of wall prefabs.
 	public GameObject[] enemyTiles;                                 //Array of enemy prefabs.
+	public GameObject[] bossTiles;                                  //Array of enemy prefabs.
 	public GameObject[] outerWallTiles;                             //Array of outer tile prefabs.
 
 	public GameObject[] potionsTiles;
@@ -61,6 +62,10 @@ public class BoardManager : MonoBehaviour
 
 	private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
 	private List<Vector3> gridPositions = new List<Vector3>();      //A list of possible locations to place tiles.
+
+	public TextAsset roomsText; // The Rooms.xml file
+	public XMLReader roomsXMLR;
+	public PT_XMLHashList roomsXML;
 
 	//Clears our list gridPositions and prepares it to generate a new board.
 	void InitialiseList()
@@ -141,24 +146,135 @@ public class BoardManager : MonoBehaviour
 	public void SetupScene(int level)
 	{
 		//Creates the outer walls and floor.
-		BoardSetup();
+		if (level % 5 == 0)
+		{
+			int bossNumber = level / 5 - 1;
+			ReadXML(""+ bossNumber);
+		}
+		else
+		{
+			BoardSetup();
+			//Reset our list of gridpositions.
+			InitialiseList();
 
-		//Reset our list of gridpositions.
-		InitialiseList();
+			//Instantiate a random number of wall tiles based on minimum and maximum, at randomized positions.
+			LayoutObjectAtRandom(wallTiles, wallCount.minimum, wallCount.maximum);
 
-		//Instantiate a random number of wall tiles based on minimum and maximum, at randomized positions.
-		LayoutObjectAtRandom(wallTiles, wallCount.minimum, wallCount.maximum);
+			SetupObjects(level);
 
-		SetupObjects(level);
+			//Determine number of enemies based on current level number, based on a logarithmic progression
+			int enemyCount = (int)Mathf.Log(level, 2f);
+			//enemyCount = 3;
+			//Instantiate a random number of enemies based on minimum and maximum, at randomized positions.
+			LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount);
 
-		//Determine number of enemies based on current level number, based on a logarithmic progression
-		int enemyCount = (int)Mathf.Log(level, 2f);
-		enemyCount = 3;
-		//Instantiate a random number of enemies based on minimum and maximum, at randomized positions.
-		LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount);
+			//Instantiate the exit tile in the upper right hand corner of our game board
+			Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
+		}
+	}
 
-		//Instantiate the exit tile in the upper right hand corner of our game board
-		Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
+	private void ReadXML(string roomNumber)
+	{
+		roomsXMLR = new XMLReader(); // Create a PT_XMLReader
+		roomsXMLR.Parse(roomsText.text); // Parse the Rooms.xml file
+		roomsXML = roomsXMLR.xml["xml"][0]["room"]; // Pull all the <room>s
+
+		BuildRoom(roomNumber);
+	}
+
+	public void BuildRoom(string rNumStr)
+	{
+		PT_XMLHashtable roomHT = null;
+		for (int i = 0; i < roomsXML.Count; i++)
+		{
+			PT_XMLHashtable ht = roomsXML[i];
+			if (ht.att("num") == rNumStr)
+			{
+				roomHT = ht;
+				break;
+			}
+		}
+		if (roomHT == null)
+		{
+			//Utils.tr("ERROR", "LayoutTiles.BuildRoom()",
+			//"Room not found: " + rNumStr);
+			return;
+		}
+		BuildRoom(roomHT);
+	}
+
+	// Build a room from an XML <room> entry
+	public void BuildRoom(PT_XMLHashtable room)
+	{
+		// Get the texture names for the floors and walls from <room> attributes
+		string floorTexStr = room.att("floor");
+		string wallTexStr = room.att("wall");
+		int bossNumber = int.Parse(room.att("boss"));
+		// Split the room into rows of tiles based on carriage returns in the
+		// Rooms.xml file
+		string[] roomRows = room.text.Split('\n');
+		// Trim tabs from the beginnings of lines. However, we're leaving spaces
+		// and underscores to allow for non-rectangular rooms.
+		for (int i = 0; i < roomRows.Length; i++)
+		{
+			roomRows[i] = roomRows[i].Trim('\t');
+		}
+		
+		string type, rawType, tileTexStr;
+		int height;
+		float maxY = roomRows.Length - 1;
+
+		gridPositions.Clear();
+
+		// These loops scan through each tile of each row of the room
+		for (int y = 0; y < roomRows.Length; y++)
+		{
+			for (int x = 0; x < roomRows[y].Length; x++)
+			{
+				// Set defaults
+				height = 0;
+				tileTexStr = floorTexStr;
+				// Get the character representing the tile
+				type = rawType = roomRows[y][x].ToString();
+				switch (rawType)
+				{
+					case " ": // empty space
+					case "_": // empty space
+							  // Just skip over empty space
+						continue;
+					case ".": // default floor
+							  // Keep type="."
+						break;
+					case "|": // default wall
+						height = 1;
+						break;
+					default:
+						// Anything else will be interpreted as floor
+						type = ".";
+						break;
+				}
+				// Set the texture for floor or wall based on <room> attributes
+				GameObject toInstantiate = null;
+				Vector3 position = new Vector3(x-1, maxY - y -1, 0f);
+                if (type == ".")
+				{
+					gridPositions.Add(position);
+					toInstantiate = floorTiles[Random.Range(0, floorTiles.Length)];
+				}
+				else if (type == "|")
+				{
+					toInstantiate = outerWallTiles[Random.Range(0, outerWallTiles.Length)];
+				}
+
+				if(rawType == "X")
+				{
+					GameObject bossTile = bossTiles[bossNumber];
+					Instantiate(bossTile, position, Quaternion.identity);
+				}
+
+				GameObject instance = Instantiate(toInstantiate, position, Quaternion.identity) as GameObject;
+			}
+		}
 	}
 
 	private void SetupObjects(int level)

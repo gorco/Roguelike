@@ -36,9 +36,30 @@ public abstract class MovingObject : MonoBehaviour
 		Vector2 end = start + new Vector2(xDir, yDir);
 
 		boxCollider.enabled = false;
-		
+
 		//Cast a line from start point to end point checking collision on blockingLayer.
 		hit = Physics2D.Linecast(start, end, blockingLayer);
+
+		Vector2 rayEnd = new Vector2(0,0);
+		if (yDir != 0) {
+			for (int i = -Mathf.RoundToInt(boxCollider.size.x) / 2; i < boxCollider.size.x/2; i++)
+			{
+				start.x = transform.position.x + i;
+				rayEnd = start + new Vector2(xDir, yDir * Mathf.Ceil(boxCollider.size.y/ 2));
+				hit = Physics2D.Linecast(start, rayEnd, blockingLayer);
+				if (hit.transform != null)
+					break;
+			}
+		} else if (xDir != 0) {
+			for (int i = -Mathf.RoundToInt(boxCollider.size.y) / 2; i < boxCollider.size.y / 2; i++)
+			{
+				start.y = transform.position.y + i;
+				rayEnd = start + new Vector2(xDir*Mathf.Ceil(boxCollider.size.x/2), yDir);
+				hit = Physics2D.Linecast(start, rayEnd, blockingLayer);
+				if (hit.transform != null)
+					break;
+			}
+		}
 
 		boxCollider.enabled = true;
 

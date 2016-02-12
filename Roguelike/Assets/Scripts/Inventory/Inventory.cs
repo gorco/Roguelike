@@ -217,7 +217,15 @@ public class Inventory : MonoBehaviour {
 		{
 			if (!eventSystem.IsPointerOverGameObject(-1) && from != null)
 			{
-				from.RemoveItem();
+				if (from.IsSpecialized())
+				{
+					from.RemoveItem();
+					CalcStats();
+				} else
+				{
+					from.RemoveItem();
+					IncreaseEmptyCount();
+				}
 				Destroy(hoverObject);
 				ResetInventoryState();
 			}
@@ -336,6 +344,14 @@ public class Inventory : MonoBehaviour {
 
 		if(to!=null && from != null)
 		{
+			if(to.IsSpecialized() && to.IsEmpty())
+			{
+				IncreaseEmptyCount();
+			} else if(from.IsSpecialized() && to.IsEmpty())
+			{
+				DecreaseEmptyCount();
+			}
+
 			Item tmp = to.GetCurrentItem();
 			if (to.ChangeItem(from.GetCurrentItem()))
 			{
@@ -447,7 +463,6 @@ public class Inventory : MonoBehaviour {
 			}
 		}
 
-		Debug.Log("EQUIP CONTENT \n" + equipment);
 		PlayerPrefs.SetString(gameObject.name + "content", content);
 		PlayerPrefs.SetString(equipmentPrefab.name + "content", equipment);
 		PlayerPrefs.Save();
@@ -457,7 +472,6 @@ public class Inventory : MonoBehaviour {
 	{
 		
 		string equipment = PlayerPrefs.GetString(equipmentPrefab.name + "content");
-		Debug.Log("EQUIP CONTENT \n" + equipment);
 		if(equipment != string.Empty)
 		{
 			string[] splitEquipment = equipment.Split(';');

@@ -40,7 +40,6 @@ public class Enemy : MovingObject, Destuctible
 			return;
 
 		}
-		//Debug.Log("Enemy " + xDir + "/" + yDir);
 		base.AttemptMove<T>(xDir, yDir);
 		//skipMove = true;
 	}
@@ -64,6 +63,7 @@ public class Enemy : MovingObject, Destuctible
 			//Check if target x position is greater than enemy's x position, if so set x direction to 1 (move right), if not set to -1 (move left).
 			xDir = target.position.x > transform.position.x ? 1 : -1;
 
+		Debug.Log(xDir + " " + yDir);
 		AttemptMove<Player>(xDir, yDir);
 	}
 
@@ -71,7 +71,6 @@ public class Enemy : MovingObject, Destuctible
 	public void LoseLife(int loss)
 	{		
 		life -= loss;
-		Debug.Log("enemy lose life "+life);
 		CheckIfDie();
 	}
 
@@ -114,7 +113,6 @@ public class Enemy : MovingObject, Destuctible
 	protected override void OnCantMove<T>(T component)
 	{
 		Destuctible hitPlayer = component as Destuctible;
-		Debug.Log("EnemyStats = " + str + "," + dex + "," + luc);
 		hitPlayer.LoseLife(str, dex, luc);
 		//Set the attack trigger of animator to trigger Enemy attack animation.
 		animator.SetTrigger("enemyAttack");
