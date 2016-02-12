@@ -179,7 +179,7 @@ public class Player : MovingObject, Destuctible
 	protected override void OnCantMove<T>(T component)
 	{
 		Destuctible destuctible = component as Destuctible;
-		destuctible.LoseLife(damage);
+		destuctible.LoseLife(this.totalStr, this.totalDex, this.totalLuc);
 
 		//Set the attack trigger of the player's animation controller in order to play the player's attack animation.
 		animator.SetTrigger("playerChop");
@@ -241,6 +241,7 @@ public class Player : MovingObject, Destuctible
 		animator.SetTrigger("playerHit");
 
 		int loss = Random.Range(str - this.totalDef, str - this.totalDef / 2);
+		loss = Mathf.Max(loss, 1);
 
 		if (Random.Range(0, 1) < 1-Mathf.Clamp(this.totalSpd/(dex * 1.5f), 0f, 0.7f))
 		{

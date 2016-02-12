@@ -13,6 +13,8 @@ public class Enemy : MovingObject, Destuctible
 	public AudioClip enemyAttack1;
 	public AudioClip enemyAttack2;
 
+	public RectTransform healthBar;
+
 	//Start overrides the virtual Start function of the base class.
 	protected override void Start()
 	{
@@ -75,6 +77,28 @@ public class Enemy : MovingObject, Destuctible
 
 	public void LoseLife(int str, int dex, int luc)
 	{
+		//Set the trigger for the player animator to transition to the playerHit animation.
+		int loss = Random.Range(str - this.def, str - this.def / 2);
+		loss = Mathf.Max(loss, 1);
+
+		if (Random.Range(0, 1) < 1 - Mathf.Clamp(this.spd / (dex * 1.5f), 0f, 0.7f))
+		{
+			if (Random.Range(0, 1) < 1 - Mathf.Clamp(luc / this.luc, 0f, 1f))
+			{
+				loss += loss;
+			}
+
+			this.life -= loss;
+			UpdateHealthBar();
+		}
+
+		CheckIfDie();
+	}
+
+	private void UpdateHealthBar()
+	{
+		float x = Mathf.Clamp(this.life / (this.maxLife * 1f), 0, 1);
+		healthBar.transform.localScale = new Vector3(x, 1, 1);
 	}
 
 	public void CheckIfDie()

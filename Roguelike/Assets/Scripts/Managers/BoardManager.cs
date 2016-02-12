@@ -153,6 +153,7 @@ public class BoardManager : MonoBehaviour
 
 		//Determine number of enemies based on current level number, based on a logarithmic progression
 		int enemyCount = (int)Mathf.Log(level, 2f);
+		enemyCount = 3;
 		//Instantiate a random number of enemies based on minimum and maximum, at randomized positions.
 		LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount);
 
