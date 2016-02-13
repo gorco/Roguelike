@@ -208,13 +208,16 @@ public class Inventory : MonoBehaviour {
 		shoesSlot.GetComponent<RectTransform>().localPosition = new Vector3(orgX + outPading * 2.5f + slotSize.x / 2, orgY - outPading * 2 - (slotSize.y + outPading) * 3, 0);
 		equipmentSlots.Add(shoesSlot);
 
-		this.transform.position = this.transform.position + new Vector3(outPading, 0, 0);
+		//Set final inventory position (centered)
+		Rect canvasRect = canvas.GetComponent<RectTransform>().rect;
+        this.transform.position = new Vector3(canvasRect.width/2, canvasRect.height / 2, 0);
 	}
 
 	void Update()
 	{
 		if (Input.GetMouseButtonUp(0))
 		{
+			//Remove/drop items if clicking out of inventory and item is selected
 			if (!eventSystem.IsPointerOverGameObject(-1) && from != null)
 			{
 				if (from.IsSpecialized())
@@ -231,6 +234,7 @@ public class Inventory : MonoBehaviour {
 			}
 		}
 
+		// Move hover object around the canvas
 		if (hoverObject != null)
 		{
 			Vector2 position;

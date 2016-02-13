@@ -63,7 +63,6 @@ public class Enemy : MovingObject, Destuctible
 			//Check if target x position is greater than enemy's x position, if so set x direction to 1 (move right), if not set to -1 (move left).
 			xDir = target.position.x > transform.position.x ? 1 : -1;
 
-		Debug.Log(xDir + " " + yDir);
 		AttemptMove<Player>(xDir, yDir);
 	}
 
