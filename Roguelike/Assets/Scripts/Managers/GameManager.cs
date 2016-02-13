@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
 
 	private bool doingSetup = true;                         //Boolean to check if we're setting up board, prevent Player from moving during setup.
 
+	public int playerMaxHungry;
 	public int playerHungry;
 	public int playerMaxLifePoints;
 	public int playerLifePoints;
@@ -53,6 +54,7 @@ public class GameManager : MonoBehaviour
 	void GenerateHero()
 	{
 		playerHungry = 0;
+		playerMaxHungry = 40;
 		playerMaxLifePoints = 100;
 		playerLifePoints = 100;
         playerStrPoints = 5;

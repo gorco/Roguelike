@@ -19,6 +19,7 @@ public class Player : MovingObject, Destuctible
 	public AudioClip gameOverSound;
 
 	private int hungry;
+	private int maxHungry;
 	private int totalMaxLife;
 	private int totalStr;
 	private int totalDef;
@@ -33,6 +34,8 @@ public class Player : MovingObject, Destuctible
 	public Text healthText;
 	public Image visualHealth;
 
+	public Image hungryIcon;
+
 	private Animator animator;                  //Used to store a reference to the Player's animator component.
 
 	//Start overrides the Start function of MovingObject
@@ -45,6 +48,7 @@ public class Player : MovingObject, Destuctible
 		minXValue = healthTransform.position.x - healthTransform.rect.width;
 
 		//Get the current stats stored in GameManager.instance between levels.
+		maxHungry = GameManager.instance.playerMaxHungry;
 		hungry = GameManager.instance.playerHungry;
 		SetBothHealth(GameManager.instance.playerLifePoints, GameManager.instance.playerMaxLifePoints);
 		str = GameManager.instance.playerStrPoints;
@@ -65,6 +69,7 @@ public class Player : MovingObject, Destuctible
 	private void OnDisable()
 	{
 		//When Player object is disabled, store the current stats in the GameManager so it can be re-loaded in next level.
+		GameManager.instance.playerMaxHungry = maxHungry;
 		GameManager.instance.playerHungry = hungry;
 		GameManager.instance.playerLifePoints = life;
 		GameManager.instance.playerMaxLifePoints = maxLife;
@@ -127,17 +132,30 @@ public class Player : MovingObject, Destuctible
 	{
 		healthText.text = "Health: " + life;
 
-		float currentXValue = MapHealthValues(life, 0, totalMaxLife, minXValue, maxXValue);
+		float currentXValue = MapValues(life, 0, totalMaxLife, minXValue, maxXValue);
 
 		healthTransform.position = new Vector3(currentXValue, cachedY, 0);
 
 		if(life > maxLife * .5f) //More health than 50%
 		{
-			visualHealth.color = new Color32((byte)MapHealthValues(life, totalMaxLife / 2, totalMaxLife, 255, 0), 255, 0, 255);
+			visualHealth.color = new Color32((byte)MapValues(life, totalMaxLife / 2, totalMaxLife, 255, 0), 255, 0, 255);
 		}
 		else //Health less than 50%
 		{
-			visualHealth.color = new Color32(255, (byte)MapHealthValues(life, 0, totalMaxLife / 2, 0, 255), 0, 255);
+			visualHealth.color = new Color32(255, (byte)MapValues(life, 0, totalMaxLife / 2, 0, 255), 0, 255);
+		}
+	}
+
+	private void HandleHungry()
+	{
+		int h = maxHungry - hungry;
+		if (h > maxHungry * .5f) //More hungry than 50%
+		{
+			hungryIcon.color = new Color32((byte)MapValues(h, maxHungry / 2, maxHungry, 255, 0), 255, 0, 255);
+		}
+		else //Hungry less than 50%
+		{
+			hungryIcon.color = new Color32(255, (byte)MapValues(h, 0, maxHungry / 2, 0, 255), 0, 255);
 		}
 	}
 
@@ -146,9 +164,10 @@ public class Player : MovingObject, Destuctible
 	protected override void AttemptMove<T>(int xDir, int yDir)
 	{
 		//Every time player moves, the hungry is increased.
-		if (hungry < 40)
+		if (hungry < maxHungry)
 		{
-			hungry++; 
+			hungry++;
+			HandleHungry();
 		} else
 		{
 			SetHealth(--life);
@@ -171,7 +190,8 @@ public class Player : MovingObject, Destuctible
 
 	public void Eat(int hungry)
 	{
-		this.hungry -= hungry;
+		this.hungry = Mathf.Max(0,this.hungry-hungry);
+		HandleHungry();
 	}
 
 	//OnCantMove overrides the abstract function OnCantMove in MovingObject.
@@ -297,7 +317,7 @@ public class Player : MovingObject, Destuctible
 		HandleHealth();
 	}
 
-	public float MapHealthValues(float x, float inMin, float inMax, float outMin, float outMax)
+	public float MapValues(float x, float inMin, float inMax, float outMin, float outMax)
 	{
 		return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 	}

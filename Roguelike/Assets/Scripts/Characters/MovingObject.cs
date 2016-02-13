@@ -39,25 +39,46 @@ public abstract class MovingObject : MonoBehaviour
 
 		//Cast a line from start point to end point checking collision on blockingLayer.
 		hit = Physics2D.Linecast(start, end, blockingLayer);
+		RaycastHit2D tmpHit = hit;
 
-		Vector2 rayEnd = new Vector2(0,0);
-		if (yDir != 0) {
-			for (int i = -Mathf.RoundToInt(boxCollider.size.x) / 2; i < boxCollider.size.x/2; i++)
+		if (boxCollider.size.x > 1 || boxCollider.size.y > 1)
+		{
+			Vector2 rayEnd = new Vector2(0, 0);
+			Transform player = GameObject.Find("Player").transform;
+            if (yDir != 0)
 			{
-				start.x = transform.position.x + i;
-				rayEnd = start + new Vector2(xDir, yDir * Mathf.Ceil(boxCollider.size.y/ 2));
-				hit = Physics2D.Linecast(start, rayEnd, blockingLayer);
-				if (hit.transform != null)
-					break;
+				for (int i = -Mathf.RoundToInt(boxCollider.size.x) / 2; i < boxCollider.size.x / 2; i++)
+				{
+					start.x = transform.position.x + i;
+					rayEnd = start + new Vector2(xDir, yDir * Mathf.Ceil(boxCollider.size.y / 2));
+					tmpHit = Physics2D.Linecast(start, rayEnd, blockingLayer);
+					if (tmpHit.transform == player)
+					{
+						hit = tmpHit;
+                        break;
+					} else if (tmpHit.transform != null)
+					{
+						hit = tmpHit;
+					}
+				}
 			}
-		} else if (xDir != 0) {
-			for (int i = -Mathf.RoundToInt(boxCollider.size.y) / 2; i < boxCollider.size.y / 2; i++)
+			else if (xDir != 0)
 			{
-				start.y = transform.position.y + i;
-				rayEnd = start + new Vector2(xDir*Mathf.Ceil(boxCollider.size.x/2), yDir);
-				hit = Physics2D.Linecast(start, rayEnd, blockingLayer);
-				if (hit.transform != null)
-					break;
+				for (int i = -Mathf.RoundToInt(boxCollider.size.y) / 2; i < boxCollider.size.y / 2; i++)
+				{
+					start.y = transform.position.y + i;
+					rayEnd = start + new Vector2(xDir * Mathf.Ceil(boxCollider.size.x / 2), yDir);
+					tmpHit = Physics2D.Linecast(start, rayEnd, blockingLayer);
+					if (tmpHit.transform == player)
+					{
+						hit = tmpHit;
+						break;
+					}
+					else if (tmpHit.transform != null)
+					{
+						hit = tmpHit;
+					}
+				}
 			}
 		}
 

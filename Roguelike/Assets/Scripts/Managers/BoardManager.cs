@@ -146,6 +146,12 @@ public class BoardManager : MonoBehaviour
 	public void SetupScene(int level)
 	{
 		//Creates the outer walls and floor.
+		/*
+		if(level == 1)
+		{
+			ReadXML("" + 0);
+		} else
+		*/
 		if (level % 5 == 0)
 		{
 			int bossNumber = level / 5 - 1;
