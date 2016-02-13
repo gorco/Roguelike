@@ -114,6 +114,10 @@ public class Item : MonoBehaviour {
 		{
 			stats += "\n Heal " + life.ToString() + " points of life";
 		}
+		if (hungry > 0)
+		{
+			stats += "\n Takes away hunger ("+hungry+" points)";
+		}
 		if (maxLife > 0)
 		{
 			stats += "\n+" + maxLife.ToString() + " Max Life"; 
