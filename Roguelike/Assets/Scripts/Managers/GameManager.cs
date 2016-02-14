@@ -147,7 +147,6 @@ public class GameManager : MonoBehaviour
 		//Wait for turnDelay seconds, defaults to .1 (100 ms).
 		yield return new WaitForSeconds(turnDelay);
 
-		//If there are no enemies spawned (IE in first level):
 		if (enemies.Count == 0)
 		{
 			//Wait for turnDelay seconds between moves, replaces delay caused by enemies moving when there are none.
@@ -162,7 +161,7 @@ public class GameManager : MonoBehaviour
 			} 
 
 			//Wait for Enemy's moveTime before moving next Enemy, 
-			yield return new WaitForSeconds(enemies[i].moveTime);
+			yield return new WaitForSeconds(enemies[i].moveTime/2);
 		}
 
 		playersTurn = true;

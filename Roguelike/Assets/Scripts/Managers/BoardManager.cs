@@ -191,10 +191,10 @@ public class BoardManager : MonoBehaviour
 			SetupObjects(level);
 
 			//Determine number of enemies based on current level number, based on a logarithmic progression
-			int enemyCount = (int)Mathf.Log(level, 2f);
-			enemyCount = 3;
+			int minEnemyCount = 2;
+			int maxEnemyCount = 6;
 			//Instantiate a random number of enemies based on minimum and maximum, at randomized positions.
-			LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount, true);
+			LayoutObjectAtRandom(enemyTiles, minEnemyCount, maxEnemyCount, true);
 
 			//Instantiate the exit tile in the upper right hand corner of our game board
 			Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
