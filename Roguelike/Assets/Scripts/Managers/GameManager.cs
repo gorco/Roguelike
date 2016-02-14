@@ -56,13 +56,13 @@ public class GameManager : MonoBehaviour
 	{
 		playerHungry = 0;
 		playerMaxHungry = 40;
-		playerMaxLifePoints = 100;
-		playerLifePoints = 100;
-        playerStrPoints = 5;
-		playerDefPoints = 1;
-		playerDexPoints = 1;
-		playerSpdPoints = 1;
-		playerLucPoints = 1;
+		playerMaxLifePoints = 1000;
+		playerLifePoints = 1000;
+        playerStrPoints = 15;
+		playerDefPoints = 10;
+		playerDexPoints = 10;
+		playerSpdPoints = 10;
+		playerLucPoints = 10;
 	}
 
 	//This is called each time a scene is loaded.
@@ -117,6 +117,13 @@ public class GameManager : MonoBehaviour
 	{
 		//Add Enemy to List enemies.
 		enemies.Add(script);
+	}
+
+	//Call this to add the passed in Enemy to the List of Enemy objects.
+	public void RemoveEnemyToList(Enemy script)
+	{
+		//Add Enemy to List enemies.
+		enemies.Remove(script);
 	}
 
 	//GameOver is called when the player reaches 0 food points

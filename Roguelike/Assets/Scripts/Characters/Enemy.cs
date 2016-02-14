@@ -5,9 +5,8 @@ public class Enemy : MovingObject, Destuctible
 {
 	public int playerDamage;                            //The amount of food points to subtract from the player when attacking.
 
-
-	private Animator animator;                          //Variable of type Animator to store a reference to the enemy's Animator component.
-	private Transform target;                           //Transform to attempt to move toward each turn.
+	protected Animator animator;                          //Variable of type Animator to store a reference to the enemy's Animator component.
+	protected Transform target;                           //Transform to attempt to move toward each turn.
 	private bool skipMove;                              //Boolean to determine whether or not enemy should skip a turn or move this turn.
 
 	public AudioClip enemyAttack1;
@@ -45,7 +44,7 @@ public class Enemy : MovingObject, Destuctible
 	}
 
 	//MoveEnemy is called by the GameManger each turn to tell each Enemy to try to move towards the player.
-	public void MoveEnemy()
+	public virtual void MoveEnemy()
 	{
 		//Declare variables for X and Y axis move directions, these range from -1 to 1.
 		//These values allow us to choose between the cardinal directions: up, down, left and right.
@@ -67,18 +66,18 @@ public class Enemy : MovingObject, Destuctible
 	}
 
 	//It takes a parameter loss which specifies how many points to lose.
-	public void LoseLife(int loss)
-	{		
+	public virtual void LoseLife(int loss)
+	{
+		damage.ShowDamage(""+loss);
 		life -= loss;
+		UpdateHealthBar();
 		CheckIfDie();
 	}
 
-	public void LoseLife(int str, int dex, int luc)
+	public virtual void LoseLife(int str, int dex, int luc)
 	{
 		//Set the trigger for the player animator to transition to the playerHit animation.
 		int loss = Random.Range(str - this.def, str - this.def / 2);
-		Debug.Log("player str " + str + " enemy def " + this.def);
-		Debug.Log("enemy lose "+(str - this.def) + " - " + (str - this.def / 2));
 		loss = Mathf.Max(loss, 1);
 
 		if (Random.Range(0f, 1f) < 1 - Mathf.Clamp(this.spd / (dex * 2f), 0f, 0.5f))
@@ -100,7 +99,7 @@ public class Enemy : MovingObject, Destuctible
 		CheckIfDie();
 	}
 
-	private void UpdateHealthBar()
+	protected void UpdateHealthBar()
 	{
 		float x = Mathf.Clamp(this.life / (this.maxLife * 1f), 0, 1);
 		healthBar.transform.localScale = new Vector3(x, 1, 1);
@@ -111,6 +110,7 @@ public class Enemy : MovingObject, Destuctible
 		if (life <= 0)
 		{
 			DestroyObject(this.gameObject, 0.25f);
+			GameManager.instance.RemoveEnemyToList(this);
 		}
 	}
 

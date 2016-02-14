@@ -257,8 +257,6 @@ public class Player : MovingObject, Destuctible
 		animator.SetTrigger("playerHit");
 
 		int loss = Random.Range(str - this.totalDef, str - this.totalDef / 2);
-		Debug.Log("enemy str " + str + " player def " + this.totalDef);
-		Debug.Log("player lose "+(str - this.totalDef) + " - " + (str - this.totalDef / 2));
         loss = Mathf.Max(loss, 1);
 
 		if (Random.Range(0f, 1f) < 1-Mathf.Clamp(this.totalSpd/(dex * 2f), 0f, 0.5f))

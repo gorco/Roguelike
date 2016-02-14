@@ -67,6 +67,8 @@ public class BoardManager : MonoBehaviour
 	public XMLReader roomsXMLR;
 	public PT_XMLHashList roomsXML;
 
+	private Transform enemiesHolder;                                  //A variable to store enemies.
+
 	//Clears our list gridPositions and prepares it to generate a new board.
 	void InitialiseList()
 	{
@@ -155,15 +157,14 @@ public class BoardManager : MonoBehaviour
 		/*
 		if (level == 1)
 		{
-			int bossNumber = 2;
-			ReadXML("" + bossNumber);
+			ReadXML("" + 5);
 		}
 		*/
 		///*
 		if (level % 5 == 0)
 		{
-			int bossNumber = level / 5 - 1;
-			ReadXML(""+ bossNumber);
+			int bossRoom = level / 5;
+			ReadXML(""+ bossRoom);
 		}
 		//*/
 		else
@@ -230,6 +231,10 @@ public class BoardManager : MonoBehaviour
 		string[] roomRows = room.text.Split('\n');
 		// Trim tabs from the beginnings of lines. However, we're leaving spaces
 		// and underscores to allow for non-rectangular rooms.
+
+		enemiesHolder = new GameObject("EnemiesStore").transform;
+
+
 		for (int i = 0; i < roomRows.Length; i++)
 		{
 			roomRows[i] = roomRows[i].Trim('\t');
@@ -281,10 +286,26 @@ public class BoardManager : MonoBehaviour
 					toInstantiate = outerWallTiles[Random.Range(0, outerWallTiles.Length)];
 				}
 
-				if(rawType == "X")
+				if (rawType == "S")
+				{
+					Instantiate(exit, position, Quaternion.identity);
+				} else if (rawType == "X")
 				{
 					GameObject bossTile = bossTiles[bossNumber];
 					Instantiate(bossTile, position, Quaternion.identity);
+				} else
+				{
+					try
+					{
+						int n = int.Parse(rawType);
+						GameObject enemyTile = enemyTiles[n];
+						GameObject enemy = Instantiate(enemyTile, position, Quaternion.identity) as GameObject;
+						enemy.transform.SetParent(enemiesHolder);
+					}
+					catch (Exception e)
+					{
+						Debug.Log("NotANumber");
+					}
 				}
 
 				GameObject instance = Instantiate(toInstantiate, position, Quaternion.identity) as GameObject;

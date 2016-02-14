@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: e4a6cb4c1d7b201428d937697c026294
-timeCreated: 1455296390
+guid: 3bc1dbb74da9d184bbc74da1aa914e94
+timeCreated: 1455472598
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -11,6 +11,7 @@ TextureImporter:
     21300008: boss1_4
     21300010: boss1_5
     21300012: boss1_6
+    21300014: boss1_7
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -24,13 +25,13 @@ TextureImporter:
   bumpmap:
     convertToNormalMap: 0
     externalNormalMap: 0
-    heightScale: 0.25
+    heightScale: .25
     normalMapFilter: 0
   isReadable: 0
   grayScaleToAlpha: 0
   generateCubemap: 0
   cubemapConvolution: 0
-  cubemapConvolutionSteps: 7
+  cubemapConvolutionSteps: 8
   cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
   textureFormat: -1
@@ -49,7 +50,7 @@ TextureImporter:
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
-  spritePivot: {x: 0.5, y: 0.5}
+  spritePivot: {x: .5, y: .5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 32
   alphaIsTransparency: 1
@@ -62,151 +63,81 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 96
-        height: 96
+        width: 128
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -23, y: 47}
-        - {x: -46, y: 20}
-        - {x: -46, y: -26}
-        - {x: -44, y: -44}
-        - {x: -41, y: -47}
-        - {x: -6, y: -47}
-        - {x: 40, y: -32}
-        - {x: 46, y: -14}
-        - {x: 46, y: 27}
-        - {x: 31, y: 47}
     - name: boss1_1
       rect:
         serializedVersion: 2
-        x: 96
+        x: 128
         y: 0
-        width: 96
-        height: 96
+        width: 128
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -25, y: 48}
-        - {x: -41, y: 9}
-        - {x: -41, y: -38}
-        - {x: -37, y: -43}
-        - {x: -31, y: -48}
-        - {x: 15, y: -48}
-        - {x: 36, y: -41}
-        - {x: 39, y: -38}
-        - {x: 39, y: 33}
-        - {x: 30, y: 48}
     - name: boss1_2
       rect:
         serializedVersion: 2
-        x: 192
+        x: 256
         y: 0
-        width: 96
-        height: 96
+        width: 128
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -5, y: 48}
-        - {x: -21, y: 38}
-        - {x: -39, y: 4}
-        - {x: -39, y: -23}
-        - {x: -28, y: -48}
-        - {x: 33, y: -48}
-        - {x: 40, y: -31}
-        - {x: 40, y: 33}
-        - {x: 18, y: 48}
     - name: boss1_3
-      rect:
-        serializedVersion: 2
-        x: 288
-        y: 0
-        width: 96
-        height: 96
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: 11, y: 48}
-        - {x: -14, y: 48}
-        - {x: -18, y: 47}
-        - {x: -17, y: 38}
-        - {x: -15, y: 36}
-        - {x: -20, y: 41}
-        - {x: -38, y: 45}
-        - {x: -38, y: -24}
-        - {x: -31, y: -24}
-        - {x: -22, y: -23}
-        - {x: -14, y: -45}
-        - {x: -12, y: -48}
-        - {x: 12, y: -48}
-        - {x: 30, y: -43}
-        - {x: 39, y: -13}
-        - {x: 39, y: -1}
-        - {x: 17, y: 38}
-    - name: boss1_4
       rect:
         serializedVersion: 2
         x: 384
         y: 0
-        width: 96
-        height: 96
+        width: 128
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: 20, y: 9}
-        - {x: 20, y: 5}
-        - {x: 20, y: 7}
-        - {x: 15, y: 39}
-        - {x: 2, y: 47}
-        - {x: -41, y: 47}
-        - {x: -46, y: 46}
-        - {x: -48, y: 44}
-        - {x: -48, y: -36}
-        - {x: -27, y: -45}
-        - {x: 6, y: -45}
-        - {x: 48, y: -19}
-        - {x: 48, y: 20}
-        - {x: 23, y: 20}
+    - name: boss1_4
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
     - name: boss1_5
       rect:
         serializedVersion: 2
-        x: 480
+        x: 640
         y: 0
-        width: 96
-        height: 96
+        width: 128
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -35, y: 37}
-        - {x: -48, y: 16}
-        - {x: -48, y: -45}
-        - {x: 10, y: -45}
-        - {x: 48, y: -17}
-        - {x: 48, y: 37}
     - name: boss1_6
       rect:
         serializedVersion: 2
-        x: 576
+        x: 768
         y: 0
-        width: 96
-        height: 96
+        width: 128
+        height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: -35, y: 37}
-        - {x: -48, y: 16}
-        - {x: -48, y: -45}
-        - {x: 10, y: -45}
-        - {x: 48, y: -17}
-        - {x: 48, y: 37}
-    outline: []
+    - name: boss1_7
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
   assetBundleName: 
