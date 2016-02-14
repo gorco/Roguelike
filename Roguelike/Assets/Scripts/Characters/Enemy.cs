@@ -14,6 +14,8 @@ public class Enemy : MovingObject, Destuctible
 
 	public RectTransform healthBar;
 
+	private bool key = false;
+
 	//Start overrides the virtual Start function of the base class.
 	protected override void Start()
 	{
@@ -64,6 +66,11 @@ public class Enemy : MovingObject, Destuctible
 
 		AttemptMove<Player>(xDir, yDir);
 	}
+	
+	public void HasTheKey()
+	{
+		this.key = true;
+	}
 
 	//It takes a parameter loss which specifies how many points to lose.
 	public virtual void LoseLife(int loss)
@@ -109,6 +116,11 @@ public class Enemy : MovingObject, Destuctible
 	{
 		if (life <= 0)
 		{
+			if (this.key)
+			{
+				this.key = false;
+				this.target.GetComponent<Player>().ObtainKey();
+			}
 			DestroyObject(this.gameObject, 0.25f);
 			GameManager.instance.RemoveEnemyToList(this);
 		}

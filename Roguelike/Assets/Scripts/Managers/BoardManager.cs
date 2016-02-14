@@ -127,8 +127,16 @@ public class BoardManager : MonoBehaviour
 	//LayoutObjectAtRandom accepts an array of game objects to choose from along with a minimum and maximum range for the number of objects to create.
 	void LayoutObjectAtRandom(GameObject[] tileArray, int minimum, int maximum)
 	{
+		LayoutObjectAtRandom(tileArray, minimum, maximum, false);
+	}
+
+
+	//LayoutObjectAtRandom accepts an array of game objects to choose from along with a minimum and maximum range for the number of objects to create.
+	void LayoutObjectAtRandom(GameObject[] tileArray, int minimum, int maximum, bool key)
+	{
 		//Choose a random number of objects to instantiate within the minimum and maximum limits
 		int objectCount = Random.Range(minimum, maximum + 1);
+		int keyPosition = Random.Range(1, objectCount);
 
 		//Instantiate objects until the randomly chosen limit objectCount is reached
 		for (int i = 0; i < objectCount; i++)
@@ -140,7 +148,11 @@ public class BoardManager : MonoBehaviour
 			GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
 
 			//Instantiate tileChoice at the position returned by RandomPosition with no change in rotation
-			Instantiate(tileChoice, randomPosition, Quaternion.identity);
+			GameObject e = Instantiate(tileChoice, randomPosition, Quaternion.identity) as GameObject;
+			if(i == keyPosition && key)
+			{
+				e.GetComponent<Enemy>().HasTheKey();
+			}
 		}
 	}
 
@@ -182,7 +194,7 @@ public class BoardManager : MonoBehaviour
 			int enemyCount = (int)Mathf.Log(level, 2f);
 			enemyCount = 3;
 			//Instantiate a random number of enemies based on minimum and maximum, at randomized positions.
-			LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount);
+			LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount, true);
 
 			//Instantiate the exit tile in the upper right hand corner of our game board
 			Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
@@ -292,8 +304,10 @@ public class BoardManager : MonoBehaviour
 				} else if (rawType == "X")
 				{
 					GameObject bossTile = bossTiles[bossNumber];
-					Instantiate(bossTile, position, Quaternion.identity);
-				} else
+					GameObject e = Instantiate(bossTile, position, Quaternion.identity) as GameObject;
+					e.GetComponent<Enemy>().HasTheKey();
+				}
+				else
 				{
 					try
 					{

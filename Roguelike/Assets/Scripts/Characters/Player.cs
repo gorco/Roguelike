@@ -37,6 +37,11 @@ public class Player : MovingObject, Destuctible
 
 	private Animator animator;                  //Used to store a reference to the Player's animator component.
 
+	public Text keyCountText;
+	private int keyCount;
+
+	public CanvasGroup KeyNeeded;
+
 	//Start overrides the Start function of MovingObject
 	protected override void Start()
 	{
@@ -207,12 +212,23 @@ public class Player : MovingObject, Destuctible
 	{
 		if (other.tag == "Exit")
 		{
-			Inventory.Inv.SaveInventory();
-			Invoke("Restart", restartLevelDelay);
-			enabled = false;
+			if(keyCount > 0)
+			{
+				Inventory.Inv.SaveInventory();
+				keyCount--;
+				keyCountText.text = "x" + keyCount;
+				Invoke("Restart", restartLevelDelay);
+				enabled = false;
+			}
+			else
+			{
+				KeyNeeded.alpha = 1f;
+				Invoke("HideKeyMessage", 2f);
+			}
+			return;
 		}
 
-		else if (other.tag == "Item")
+		if (other.tag == "Item")
 		{
 			if (Inventory.Inv.AddItem(other.GetComponent<Item>()))
 			{
@@ -220,6 +236,17 @@ public class Player : MovingObject, Destuctible
 				other.gameObject.SetActive(false);
 			}
 		}
+	}
+
+	public void ObtainKey()
+	{
+		keyCount++;
+		keyCountText.text = "x" + keyCount;
+	}
+
+    private void HideKeyMessage()
+	{
+		KeyNeeded.alpha = 0f;
 	}
 
 	//Restart reloads the scene when called.
