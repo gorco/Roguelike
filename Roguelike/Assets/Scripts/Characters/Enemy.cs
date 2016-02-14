@@ -86,8 +86,13 @@ public class Enemy : MovingObject, Destuctible
 				loss += loss;
 			}
 
+			damage.ShowDamage("-" + loss);
 			this.life -= loss;
 			UpdateHealthBar();
+		}
+		else
+		{
+			damage.ShowDamage("dodge");
 		}
 
 		CheckIfDie();

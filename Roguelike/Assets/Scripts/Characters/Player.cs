@@ -8,7 +8,6 @@ public class Player : MovingObject, Destuctible
 	public float restartLevelDelay = 1f;        //Delay time in seconds to restart level.
 	public int pointsPerFood = 10;              //Number of points to add to player food points when picking up a food object.
 	public int pointsPerSoda = 20;              //Number of points to add to player food points when picking up a soda object.
-	public int damage = 1;                  //How much damage a player does to a wall when chopping it.
 
 	public AudioClip moveSound1;
 	public AudioClip moveSound2;
@@ -57,10 +56,7 @@ public class Player : MovingObject, Destuctible
 		spd = GameManager.instance.playerSpdPoints;
 		luc = GameManager.instance.playerLucPoints;
 
-		//healthText.text = "Life: " + life;
-
 		base.Start();
-		Inventory.Inv.CalcStats();
 		Inventory.Inv.LoadInventory();	
 	}
 
@@ -249,7 +245,7 @@ public class Player : MovingObject, Destuctible
 	{
 		//Set the trigger for the player animator to transition to the playerHit animation.
 		animator.SetTrigger("playerHit");
-
+		damage.ShowDamage("-"+loss);
 		SetHealth(life - loss);
 
 		CheckIfGameOver();
@@ -268,10 +264,12 @@ public class Player : MovingObject, Destuctible
 			if (Random.Range(0, 1) < 1 - Mathf.Clamp(luc / this.totalLuc, 0f, 1f))
 			{
 				loss += loss;
-				
 			}
-
+			//damage.ShowDamage("-" + loss);
 			SetHealth(life - loss);
+		} else
+		{
+			//damage.ShowDamage("dodge");
 		}
 		
 

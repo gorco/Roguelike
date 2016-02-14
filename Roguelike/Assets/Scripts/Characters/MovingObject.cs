@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public abstract class MovingObject : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public abstract class MovingObject : MonoBehaviour
 	public int dex;
 	public int spd;
 	public int luc;
+
+	public DamageText damage;
 
 	protected virtual void Start()
 	{

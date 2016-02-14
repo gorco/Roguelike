@@ -467,15 +467,15 @@ public class Inventory : MonoBehaviour {
 			}
 		}
 
-		PlayerPrefs.SetString(gameObject.name + "content", content);
-		PlayerPrefs.SetString(equipmentPrefab.name + "content", equipment);
+		PlayerPrefs.SetString("InventoryContent", content);
+		PlayerPrefs.SetString("EquipmentContent", equipment);
 		PlayerPrefs.Save();
 	}
 
 	public void LoadInventory()
 	{
 		
-		string equipment = PlayerPrefs.GetString(equipmentPrefab.name + "content");
+		string equipment = PlayerPrefs.GetString("EquipmentContent");
 		if(equipment != string.Empty)
 		{
 			string[] splitEquipment = equipment.Split(';');
@@ -497,7 +497,7 @@ public class Inventory : MonoBehaviour {
 			}
 		}
 
-		string content = PlayerPrefs.GetString(gameObject.name + "content");
+		string content = PlayerPrefs.GetString("InventoryContent");
 		if (content != string.Empty)
 		{
 			string[] splitContent = content.Split(';');
@@ -518,6 +518,7 @@ public class Inventory : MonoBehaviour {
 				}
 			}
 		}
+		CalcStats();
 	}
 
 	private Item GetItemInstance(string name, string type, int power)
