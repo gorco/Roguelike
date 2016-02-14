@@ -257,19 +257,21 @@ public class Player : MovingObject, Destuctible
 		animator.SetTrigger("playerHit");
 
 		int loss = Random.Range(str - this.totalDef, str - this.totalDef / 2);
-		loss = Mathf.Max(loss, 1);
+		Debug.Log("enemy str " + str + " player def " + this.totalDef);
+		Debug.Log("player lose "+(str - this.totalDef) + " - " + (str - this.totalDef / 2));
+        loss = Mathf.Max(loss, 1);
 
-		if (Random.Range(0, 1) < 1-Mathf.Clamp(this.totalSpd/(dex * 1.5f), 0f, 0.7f))
+		if (Random.Range(0f, 1f) < 1-Mathf.Clamp(this.totalSpd/(dex * 2f), 0f, 0.5f))
 		{
-			if (Random.Range(0, 1) < 1 - Mathf.Clamp(luc / this.totalLuc, 0f, 1f))
+			if (Random.Range(0f, 1f) < 1 - Mathf.Clamp(luc / this.totalLuc, 0f, 1f))
 			{
 				loss += loss;
 			}
-			//damage.ShowDamage("-" + loss);
+			damage.ShowDamage("-" + loss);
 			SetHealth(life - loss);
 		} else
 		{
-			//damage.ShowDamage("dodge");
+			damage.ShowDamage("dodge");
 		}
 		
 

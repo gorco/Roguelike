@@ -145,19 +145,27 @@ public class BoardManager : MonoBehaviour
 	//SetupScene initializes our level and calls the previous functions to lay out the game board
 	public void SetupScene(int level)
 	{
-		//Creates the outer walls and floor.
-		
+		//Reset inventory		
 		if(level == 1)
 		{
 			PlayerPrefs.SetString("InventoryContent", "");
 			PlayerPrefs.SetString("EquipmentContent", "");
-		} 
-		
+		}
+
+		///*
+		if (level == 1)
+		{
+			int bossNumber = 2;
+			ReadXML("" + bossNumber);
+		}
+		//*/
+		/*
 		if (level % 5 == 0)
 		{
 			int bossNumber = level / 5 - 1;
 			ReadXML(""+ bossNumber);
 		}
+		*/
 		else
 		{
 			BoardSetup();
@@ -171,7 +179,7 @@ public class BoardManager : MonoBehaviour
 
 			//Determine number of enemies based on current level number, based on a logarithmic progression
 			int enemyCount = (int)Mathf.Log(level, 2f);
-			//enemyCount = 3;
+			enemyCount = 3;
 			//Instantiate a random number of enemies based on minimum and maximum, at randomized positions.
 			LayoutObjectAtRandom(enemyTiles, enemyCount, enemyCount);
 

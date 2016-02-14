@@ -77,11 +77,13 @@ public class Enemy : MovingObject, Destuctible
 	{
 		//Set the trigger for the player animator to transition to the playerHit animation.
 		int loss = Random.Range(str - this.def, str - this.def / 2);
+		Debug.Log("player str " + str + " enemy def " + this.def);
+		Debug.Log("enemy lose "+(str - this.def) + " - " + (str - this.def / 2));
 		loss = Mathf.Max(loss, 1);
 
-		if (Random.Range(0, 1) < 1 - Mathf.Clamp(this.spd / (dex * 1.5f), 0f, 0.7f))
+		if (Random.Range(0f, 1f) < 1 - Mathf.Clamp(this.spd / (dex * 2f), 0f, 0.5f))
 		{
-			if (Random.Range(0, 1) < 1 - Mathf.Clamp(luc / this.luc, 0f, 1f))
+			if (Random.Range(0f, 1f) < 1 - Mathf.Clamp(luc / this.luc, 0f, 1f))
 			{
 				loss += loss;
 			}
