@@ -152,20 +152,20 @@ public class BoardManager : MonoBehaviour
 			PlayerPrefs.SetString("EquipmentContent", "");
 		}
 
-		///*
+		/*
 		if (level == 1)
 		{
 			int bossNumber = 2;
 			ReadXML("" + bossNumber);
 		}
-		//*/
-		/*
+		*/
+		///*
 		if (level % 5 == 0)
 		{
 			int bossNumber = level / 5 - 1;
 			ReadXML(""+ bossNumber);
 		}
-		*/
+		//*/
 		else
 		{
 			BoardSetup();
