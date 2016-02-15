@@ -117,6 +117,7 @@ public class GameManager : MonoBehaviour
 
 			Invoke("ResetSkills", levelStartDelay);
 			Invoke("End", levelStartDelay*2.5f);
+			level = 0;
 		}
 		else
 		{

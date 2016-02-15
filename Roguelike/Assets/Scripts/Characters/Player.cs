@@ -128,6 +128,7 @@ public class Player : MovingObject, Destuctible
 
 	public float GetSkillBonus(int pos)
 	{
+		Debug.Log("Bonus" + pos + " = " + itemsBonus[pos]);
 		return itemsBonus[pos];
 	}
 
@@ -213,8 +214,7 @@ public class Player : MovingObject, Destuctible
 	public void Eat(int hungry)
 	{
 		int hungryBonus = Mathf.RoundToInt(hungry * GetSkillBonus(0));
-		hungry += hungryBonus;
-		this.hungry = Mathf.Max(0,this.hungry-hungry);
+		this.hungry = Mathf.Max(0,this.hungry - hungryBonus);
 		HandleHungry();
 	}
 
@@ -281,10 +281,9 @@ public class Player : MovingObject, Destuctible
 	public void ObtainLife(int life)
 	{
 		int lifeBonus = Mathf.RoundToInt(life * GetSkillBonus(1));
-		life += lifeBonus;
-		if (this.life + life <= this.totalMaxLife)
+		if (this.life + lifeBonus <= this.totalMaxLife)
 		{
-			SetHealth(this.life + life);
+			SetHealth(this.life + lifeBonus);
 		} else
 		{
 			SetHealth(this.totalMaxLife);

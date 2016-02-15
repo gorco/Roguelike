@@ -86,6 +86,9 @@ public class Inventory : MonoBehaviour {
 		sizeText = sizeTextObject;
 		visualText = visualTextObject;
 
+		equipmentSlots.Clear();
+		slotsList.Clear();
+
 		canvasGroup = GetComponent<CanvasGroup>();
 		CreateInventoryLayout();
     }
@@ -476,7 +479,9 @@ public class Inventory : MonoBehaviour {
 			}
 		}
 
-		PlayerPrefs.SetString("InventoryContent", content);
+		Debug.Log("SAVE EQUIP " + equipment);
+		Debug.Log("SAVE INV " + content);
+        PlayerPrefs.SetString("InventoryContent", content);
 		PlayerPrefs.SetString("EquipmentContent", equipment);
 		PlayerPrefs.Save();
 	}

@@ -46,16 +46,16 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 	public bool ChangeItem(Item newItem)
 	{
 		this.item = newItem;
-		if (newItem != null)
+		if (item != null)
 		{
-			if (!specialized || spezialitation == newItem.itemType)
+			if (!specialized || spezialitation == item.itemType)
 			{
 				if (this.img == null)
 				{
 					this.img = this.transform.GetChild(0).GetComponent<Image>();
 				}
 				this.img.enabled = true;
-				this.img.sprite = newItem.itemSprite;
+				this.img.sprite = item.itemSprite;
 				return true;
 			}
 		}

@@ -11,4 +11,9 @@ public class ButtonFunctions : MonoBehaviour {
 	{
 		Application.LoadLevel(n);
 	}
+
+	public void DestroyGameManager()
+	{
+		DestroyObject(GameManager.instance.gameObject, 1f);
+	}
 }
