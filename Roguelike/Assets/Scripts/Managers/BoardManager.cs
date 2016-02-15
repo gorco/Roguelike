@@ -176,14 +176,15 @@ public class BoardManager : MonoBehaviour
 			PlayerPrefs.SetString("EquipmentContent", "");
 		}
 
-		/*
+		
 		//Testing Bosses
+		/*
 		if (level == 1)
 		{
-			ReadXML("" + 5);
+			ReadXML("" + 4);
 			return;
 		}*/
-
+		
 		//Boss Level
 		if (level % 5 == 0)
 		{

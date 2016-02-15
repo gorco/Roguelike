@@ -12,6 +12,10 @@ public class Money : MonoBehaviour {
 
 	void Start () {
 		M = this;
+
+		//PlayerPrefs.SetString("Money", "");
+		//PlayerPrefs.Save();
+
 		this.money.text = PlayerPrefs.GetString("Money");
 		if (string.IsNullOrEmpty(this.money.text))
 		{

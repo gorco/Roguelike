@@ -121,7 +121,11 @@ public class SkillStore : MonoBehaviour, IPointerClickHandler
 				break;
 		}
 		string desc = info.Replace("$", "" + LevelBonus(currentLevel));
-		string next = info.Replace("$", "" + LevelBonus(currentLevel+1));
+		string next = string.Empty;
+		if (currentLevel < 10)
+		{
+			next = info.Replace("$", "" + LevelBonus(currentLevel + 1));
+		}
 
 		string name = names[namePosition];
 

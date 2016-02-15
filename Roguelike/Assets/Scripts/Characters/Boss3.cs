@@ -13,11 +13,6 @@ public class Boss3 : Enemy {
 	[Header("Summoned enemies")]
 	public GameObject enemy;
 
-    public override void MoveEnemy()
-	{
-		//this boss can't move
-	}
-
 	protected override void AttemptMove<T>(int xDir, int yDir) 
 	{
 		//Initialize enemiesStore
