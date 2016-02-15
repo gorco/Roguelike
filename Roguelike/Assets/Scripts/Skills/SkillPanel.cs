@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 
 public class SkillPanel : MonoBehaviour
 {
+	[Header("Tooltip")]
 	public GameObject tooltipObject;
 	public Text sizeTextObject;
 	public Text visualTextObject;

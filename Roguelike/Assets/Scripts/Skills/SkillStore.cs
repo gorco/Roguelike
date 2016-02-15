@@ -8,27 +8,28 @@ public enum TypeSkill
 	ITEM,
 	ACTIVE
 }
+
 public class SkillStore : MonoBehaviour, IPointerClickHandler
 {
 	public TypeSkill typeSkill;
+	public int namePosition;
+	public string info;
+
+	[Header("Cost Fields")]
 	public int baseCost = 100;
 	public float mulCost = 2f;
-	public bool intBonus = true;
+
+	[Header("Bonus Fields")]
+	public bool intBonus = true;			//If the bonus value is int or float
 	public float baseValue = 10;
 	public float mulValue = 1.3f;
 
+	[Header("Level Icon")]
 	public Text level;
-	public int namePosition;
-	public string info;
 
 	private int cost;
 	private int currentLevel = 0;
 	private int maxLevel = 10;
-
-	void Start()
-	{
-
-	}
 
 	public void OnPointerClick(PointerEventData eventData)
 	{

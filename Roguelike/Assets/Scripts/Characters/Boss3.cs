@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 public class Boss3 : Enemy {
 
-	private bool bersek = false;
-	private GameObject enemiesStore;
-	private List<Vector3> positions = new List<Vector3>();
-
+	[Header("Special Attack fields")]
 	public int spTurns = 3;
 	private int count = 0;
 
+	private GameObject enemiesStore;
+	private List<Vector3> positions = new List<Vector3>();
+
+	[Header("Summoned enemies")]
 	public GameObject enemy;
 
     public override void MoveEnemy()
@@ -19,6 +20,7 @@ public class Boss3 : Enemy {
 
 	protected override void AttemptMove<T>(int xDir, int yDir) 
 	{
+		//Initialize enemiesStore
 		if(enemiesStore == null)
 		{
 			enemiesStore = GameObject.Find("EnemiesStore");
@@ -29,6 +31,7 @@ public class Boss3 : Enemy {
 			}
 		}
 
+		//Summon enemies (Special move)
 		if (enemiesStore.transform.childCount == 0)
 		{
 			if (count == spTurns)
@@ -47,11 +50,13 @@ public class Boss3 : Enemy {
 			count++;
 		}
 
+		//Normal attack
 		base.AttemptMove<T>(xDir, yDir);
 	}
 
 	public override void LoseLife(int loss)
 	{
+		//The boss is invulnerable while there are others enemies
 		if (enemiesStore.transform.childCount > 0)
 		{
 			base.LoseLife(0);
@@ -63,6 +68,7 @@ public class Boss3 : Enemy {
 
 	public override void LoseLife(int str, int dex, int luc)
 	{
+		//The boss is invulnerable while there are others enemies
 		if (enemiesStore.transform.childCount > 0)
 		{
 			base.LoseLife(0);

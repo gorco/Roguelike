@@ -4,14 +4,15 @@ using UnityEngine.UI;
 
 public abstract class MovingObject : MonoBehaviour
 {
+	[Header("Move and Collider Fields")]
 	public float moveTime = 0.1f;           //Time it will take object to move, in seconds.
 	public LayerMask blockingLayer;         //Layer on which collision will be checked.
-
 
 	private BoxCollider2D boxCollider;      //The BoxCollider2D component attached to this object.
 	private Rigidbody2D rb2D;               //The Rigidbody2D component attached to this object.
 	private float inverseMoveTime;          //Used to make movement more efficient.
 
+	[Header("Common Stats")]
 	public int life;                     //Used to store player life points total during level.
 	public int maxLife;
 	public int str;
@@ -20,6 +21,7 @@ public abstract class MovingObject : MonoBehaviour
 	public int spd;
 	public int luc;
 
+	[Header("Damage Visualization")]
 	public DamageText damage;
 
 	protected virtual void Start()
@@ -44,6 +46,7 @@ public abstract class MovingObject : MonoBehaviour
 		hit = Physics2D.Linecast(start, end, blockingLayer);
 		RaycastHit2D tmpHit = hit;
 
+		//Calculate movement if the size of enemy is big
 		if (boxCollider.size.x > 1 || boxCollider.size.y > 1)
 		{
 			Vector2 rayEnd = new Vector2(0, 0);

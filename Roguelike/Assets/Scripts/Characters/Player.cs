@@ -5,10 +5,10 @@ using UnityEngine.UI;
 //Player inherits from MovingObject, our base class for objects that can move, Enemy also inherits from this.
 public class Player : MovingObject, Destuctible
 {
+	[Header("Level Charge Delay")]
 	public float restartLevelDelay = 1f;        //Delay time in seconds to restart level.
-	public int pointsPerFood = 10;              //Number of points to add to player food points when picking up a food object.
-	public int pointsPerSoda = 20;              //Number of points to add to player food points when picking up a soda object.
 
+	[Header("Sounds")]
 	public AudioClip moveSound1;
 	public AudioClip moveSound2;
 	public AudioClip eatSound1;
@@ -16,6 +16,8 @@ public class Player : MovingObject, Destuctible
     public AudioClip drinkSound1;
 	public AudioClip drinkSound2;
 	public AudioClip gameOverSound;
+
+	private Animator animator;                  //Used to store a reference to the Player's animator component.
 
 	private int hungry;
 	private int maxHungry;
@@ -26,20 +28,20 @@ public class Player : MovingObject, Destuctible
 	private int totalSpd;
 	private int totalLuc;
 
+	[Header("Health Bar HUD")]
 	public RectTransform healthTransform;
+	public Text healthText;
+	public Image visualHealth;
 	private float cachedY;
 	private float minXValue;
 	private float maxXValue;
-	public Text healthText;
-	public Image visualHealth;
 
+	[Header("Hungry HUD")]
 	public Image hungryIcon;
 
-	private Animator animator;                  //Used to store a reference to the Player's animator component.
-
+	[Header("Key HUD")]
 	public Text keyCountText;
 	private int keyCount;
-
 	public CanvasGroup KeyNeeded;
 
 	private List<float> itemsBonus = new List<float>();
@@ -111,6 +113,17 @@ public class Player : MovingObject, Destuctible
 			//Pass in horizontal and vertical as parameters to specify the direction to move Player in.
 			AttemptMove<Destuctible>(horizontal, vertical);
 		}
+	}
+
+	//For Boss5 features
+	public void CopyValues(out int maxLife, out int str, out int def, out int dex, out int spd, out int luc)
+	{
+		maxLife = this.totalMaxLife;
+		str = this.totalStr;
+		def = this.totalDef;
+		dex = this.totalDex;
+		spd = this.totalSpd;
+		luc = this.totalLuc;
 	}
 
 	public float GetSkillBonus(int pos)
@@ -295,11 +308,14 @@ public class Player : MovingObject, Destuctible
 		//Set the trigger for the player animator to transition to the playerHit animation.
 		animator.SetTrigger("playerHit");
 
+		//Calculate Damage
 		int loss = Random.Range(str - this.totalDef, str - this.totalDef / 2);
         loss = Mathf.Max(loss, 1);
 
+		//Probability of Dodge
 		if (Random.Range(0f, 1f) < 1-Mathf.Clamp(this.totalSpd/(dex * 2f), 0f, 0.5f))
 		{
+			//Probability of Critical attack
 			if (Random.Range(0f, 1f) < 1 - Mathf.Clamp(luc / this.totalLuc, 0f, 1f))
 			{
 				loss += loss;
@@ -327,17 +343,7 @@ public class Player : MovingObject, Destuctible
 		}
 	}
 
-	public void Use(Item item)
-	{
-		switch (item.itemType)
-		{
-			case ItemType.Consumable:
-				break;
-			default:
-				break;
-		}
-	}
-
+	//Update stats with the equipment
 	public void SetStats(int mLife, int str, int def, int dex, int spd, int luc)
 	{
 		int strBonus = Mathf.RoundToInt(str * GetSkillBonus(2));
@@ -360,6 +366,7 @@ public class Player : MovingObject, Destuctible
 		HandleHealth();
 	}
 
+	//For HealthBar and HungryIcon
 	public float MapValues(float x, float inMin, float inMax, float outMin, float outMax)
 	{
 		return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;

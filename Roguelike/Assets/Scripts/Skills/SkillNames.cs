@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
+﻿
 public static class SkillNames {
 
 	public static string[] ItemSkills = { "Tactician", "Alchemist", "Warrior", "The Wall", "Samurai", "Ninja", "Roulette" };

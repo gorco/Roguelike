@@ -3,16 +3,18 @@ using System.Collections;
 
 public class Enemy : MovingObject, Destuctible
 {
-	public int playerDamage;                            //The amount of food points to subtract from the player when attacking.
-
-	protected Animator animator;                          //Variable of type Animator to store a reference to the enemy's Animator component.
-	protected Transform target;                           //Transform to attempt to move toward each turn.
-	private bool skipMove;                              //Boolean to determine whether or not enemy should skip a turn or move this turn.
-
+	[Header("Audio")]
 	public AudioClip enemyAttack1;
 	public AudioClip enemyAttack2;
 
+	protected Animator animator;                        //Variable of type Animator to store a reference to the enemy's Animator component.
+	protected Transform target;                         //Transform to attempt to move toward each turn.
+	private bool skipMove;                              //Boolean to determine whether or not enemy should skip a turn or move this turn.
+
+	[Header("HealthBar Visualization")]
 	public RectTransform healthBar;
+
+	[Header("Money Rewards")]
 	public int money = 1;
 
 	private bool key = false;
@@ -84,12 +86,14 @@ public class Enemy : MovingObject, Destuctible
 
 	public virtual void LoseLife(int str, int dex, int luc)
 	{
-		//Set the trigger for the player animator to transition to the playerHit animation.
+		//Calculate Damage
 		int loss = Random.Range(str - this.def, str - this.def / 2);
 		loss = Mathf.Max(loss, 1);
 
+		//Probability of Dodge
 		if (Random.Range(0f, 1f) < 1 - Mathf.Clamp(this.spd / (dex * 2f), 0f, 0.5f))
 		{
+			//Probability of Critical attack
 			if (Random.Range(0f, 1f) < 1 - Mathf.Clamp(luc / this.luc, 0f, 1f))
 			{
 				loss += loss;

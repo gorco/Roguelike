@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class Money : MonoBehaviour {
 
+	[Header("Money Text")]
 	public Text money;
 	private int coins = 0;
 

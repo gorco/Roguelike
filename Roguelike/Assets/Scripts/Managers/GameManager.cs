@@ -24,15 +24,18 @@ public class GameManager : MonoBehaviour
 
 	private bool doingSetup = true;                         //Boolean to check if we're setting up board, prevent Player from moving during setup.
 
-	public int playerMaxHungry;
-	public int playerHungry;
-	public int playerMaxLifePoints;
-	public int playerLifePoints;
-	public int playerStrPoints;
-	public int playerDefPoints;
-	public int playerDexPoints;
-	public int playerSpdPoints;
-	public int playerLucPoints;
+	[HideInInspector]
+	public int playerMaxHungry, 
+		playerHungry, 
+		playerMaxLifePoints, 
+		playerLifePoints, 
+		playerStrPoints, 
+		playerDefPoints, 
+		playerDexPoints, 
+		playerSpdPoints, 
+		playerLucPoints;
+
+	[HideInInspector]
 	public List<float> itemsBonus = new List<float>();
 
 	private List<int> StatsBonus = new List<int>();
@@ -131,7 +134,7 @@ public class GameManager : MonoBehaviour
 	public void GameOver()
 	{
 		//Set levelText to display number of levels passed and game over message
-		levelText.text = "After floor" + level + ", you died.";
+		levelText.text = "In the level - " + level + ", you died.";
 
 		//Enable black background image gameObject.
 		levelImage.SetActive(true);

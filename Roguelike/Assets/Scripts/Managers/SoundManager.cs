@@ -9,7 +9,6 @@ public class SoundManager : MonoBehaviour
 	public float lowPitchRange = .95f;              //The lowest a sound effect will be randomly pitched.
 	public float highPitchRange = 1.05f;            //The highest a sound effect will be randomly pitched.
 
-
 	void Awake()
 	{
 		if (instance == null)
@@ -20,7 +19,6 @@ public class SoundManager : MonoBehaviour
 		DontDestroyOnLoad(gameObject);
 	}
 
-
 	//Used to play single sound clips.
 	public void PlaySingle(AudioClip clip)
 	{
@@ -29,7 +27,6 @@ public class SoundManager : MonoBehaviour
 
 		efxSource.Play();
 	}
-
 
 	//RandomizeSfx chooses randomly between various audio clips and slightly changes their pitch.
 	public void RandomizeSfx(params AudioClip[] clips)

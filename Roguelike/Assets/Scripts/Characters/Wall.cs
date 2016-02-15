@@ -3,10 +3,12 @@ using System.Collections;
 using System;
 
 public class Wall : MonoBehaviour, Destuctible
-{         
+{
+	[Header("Damage Fields")]
 	public Sprite dmgSprite;                    //Alternate sprite to display after Wall has been attacked by player.
 	public int hp = 3;                          //hit points for the wall.
 
+	[Header("Audio")]
 	public AudioClip chopSound1;
 	public AudioClip chopSound2;
 
@@ -31,5 +33,6 @@ public class Wall : MonoBehaviour, Destuctible
 
 	public void LoseLife(int str, int dex, int luc)
 	{
+		LoseLife(1);
 	}
 }

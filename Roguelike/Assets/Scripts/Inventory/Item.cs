@@ -22,16 +22,24 @@ public enum Quality
 
 public class Item : MonoBehaviour {
 
+	[Header("Item icon")]
 	public Sprite itemSprite;
-	public ItemType itemType;
-	public Quality quality;
 
+	[Header("Item type")]
+	public ItemType itemType;
+
+	[Header("Item name and info")]
 	public string itemName;
 	public string itemInfo;
 
+	[Header("Level of power and rarity")]
 	public int power;
+	public Quality quality;
+
+	[Header("Price")]
 	public int value;
 
+	[Header("Attributes")]
 	public int hungry;
 	public int life;
 	public int maxLife;

@@ -5,6 +5,9 @@ using UnityEngine.EventSystems;
 
 public class Inventory : MonoBehaviour {
 
+	public static Inventory Inv;
+
+	[Header("Layout Fields")]
 	public Slot slotPrefab;
 	public int outPading = 5;
 	public int slots = 25;
@@ -12,26 +15,19 @@ public class Inventory : MonoBehaviour {
 	public int leftPad = 2;
 	public int topPad = 2;
 
-	public GameObject iconPrefab;
-
 	private float inventoryW, inventoryH;
 	private List<Slot> slotsList;
 
-	private static Slot from, to;
-
-	private int emptySlots = 0;
-
+	[Header("Hover")]
+	public GameObject iconPrefab;
 	private static GameObject hoverObject;
+
+	[Header("HUD")]
 	public Canvas canvas;
-
-	public static Inventory Inv;
-
 	public EventSystem eventSystem;
 
 	public UnityEngine.UI.Image equipmentPrefab;
-
 	private UnityEngine.UI.Image equipment;
-
 	private UnityEngine.UI.Image inventoryBar;
 	public UnityEngine.UI.Image close;
 	public UnityEngine.UI.Image statsPanel;
@@ -51,27 +47,36 @@ public class Inventory : MonoBehaviour {
 
 	private List<Slot> equipmentSlots;
 
+	[Header("Potions")]
 	public GameObject[] potionsTiles;
 
+	[Header("Onjects Level 1-5")]
 	public GameObject[] consumibleTiles1;                           //Array of consumible prefabs.
 	public GameObject[] equipmentTiles1;                            //Array of equipment prefabs.
 	public GameObject[] weaponsTiles1;                              //Array of weapons prefabs.
 
+	[Header("Onjects Level 6-10")]
 	public GameObject[] consumibleTiles2;                           //Array of consumible prefabs.
 	public GameObject[] equipmentTiles2;                            //Array of equipment prefabs.
 	public GameObject[] weaponsTiles2;                              //Array of weapons prefabs.
 
+	[Header("Onjects Level 11-15")]
 	public GameObject[] consumibleTiles3;                           //Array of consumible prefabs.
 	public GameObject[] equipmentTiles3;                            //Array of equipment prefabs.
 	public GameObject[] weaponsTiles3;                              //Array of weapons prefabs.
 
+	[Header("Onjects Level 16-20")]
 	public GameObject[] consumibleTiles4;                           //Array of consumible prefabs.
 	public GameObject[] equipmentTiles4;                            //Array of equipment prefabs.
 	public GameObject[] weaponsTiles4;                              //Array of weapons prefabs.
 
+	[Header("Onjects Level 21-25")]
 	public GameObject[] consumibleTiles5;                           //Array of consumible prefabs.
 	public GameObject[] equipmentTiles5;                            //Array of equipment prefabs.
 	public GameObject[] weaponsTiles5;                              //Array of weapons prefabs.
+
+	private static Slot from, to;
+	private int emptySlots = 0;
 
 	void Awake ()
 	{
@@ -432,8 +437,8 @@ public class Inventory : MonoBehaviour {
 
 	public void SaveInventory()
 	{
+		//Save Items
 		string content = string.Empty;
-
 		for (int i = 0; i < slotsList.Count; i++)
 		{
 			if (!slotsList[i].IsEmpty())
@@ -451,6 +456,7 @@ public class Inventory : MonoBehaviour {
 			}
 		}
 
+		//Save Equipment
 		string equipment = string.Empty;
 		for (int i = 0; i < equipmentSlots.Count; i++)
 		{
@@ -477,6 +483,7 @@ public class Inventory : MonoBehaviour {
 	public void LoadInventory()
 	{
 		
+		//Load Equipment
 		string equipment = PlayerPrefs.GetString("EquipmentContent");
 		if(equipment != string.Empty)
 		{
@@ -499,6 +506,7 @@ public class Inventory : MonoBehaviour {
 			}
 		}
 
+		//Load Items
 		string content = PlayerPrefs.GetString("InventoryContent");
 		if (content != string.Empty)
 		{
@@ -523,6 +531,7 @@ public class Inventory : MonoBehaviour {
 		CalcStats();
 	}
 
+	//Return an instance of object with the name, type and power passed as arguments
 	private Item GetItemInstance(string name, string type, int power)
 	{
 		if (type.Equals(ItemType.Potions.ToString()))

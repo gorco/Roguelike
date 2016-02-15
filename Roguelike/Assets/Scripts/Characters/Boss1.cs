@@ -3,17 +3,15 @@ using System.Collections;
 
 public class Boss1 : Enemy {
 
-	private bool bersek = false;
-	public int spTurns = 3;
-	private int count = 0;
+	[Header("Special Attack fields")]
+	public int playerDamage;                           
+	public int spTurns = 3;                          //The number of turns between special attacks.
 
-	public override void MoveEnemy()
-	{
-		base.MoveEnemy();
-	}
+	private int count = 0;
 
 	protected override void AttemptMove<T>(int xDir, int yDir) 
 	{
+		//Normal attack;
 		if(count < spTurns)
 		{
 			base.AttemptMove<T>(xDir, yDir);
@@ -21,6 +19,7 @@ public class Boss1 : Enemy {
 			return;
 		}
 
+		//Special Attack
 		count = 0;
 		RaycastHit2D hit;
 		bool canMove = Move(xDir, yDir, out hit);
@@ -39,7 +38,7 @@ public class Boss1 : Enemy {
 	{
 		Destuctible hitPlayer = component as Destuctible;
 		hitPlayer.LoseLife(playerDamage);
-		//Set the attack trigger of animator to trigger Enemy attack animation.
+
 		animator.SetTrigger("enemySp");
 
 		SoundManager.instance.RandomizeSfx(enemyAttack1, enemyAttack2);

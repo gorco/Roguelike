@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class DamageText : MonoBehaviour
 {
+	[Header("Damage Text")]
 	public Text Text;
 
 	private float duration;

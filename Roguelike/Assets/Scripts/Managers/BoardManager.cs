@@ -20,7 +20,6 @@ public class BoardManager : MonoBehaviour
 		}
 	}
 
-
 	public int columns = 8;                                         //Number of columns in our game board.
 	public int rows = 8;                                            //Number of rows in our game board.
 
@@ -32,33 +31,46 @@ public class BoardManager : MonoBehaviour
 	public Count weaponsCount = new Count(1, 3);                    //Lower and upper limit for our random number of equipment items per level.
 	public Count potionsCount = new Count(1, 3);                    //Lower and upper limit for our random number of equipment items per level.
 
+	[Header("All Levels")]
 	public GameObject[] floorTiles;                                 //Array of floor prefabs.
 	public GameObject[] wallTiles;                                  //Array of wall prefabs.
-	public GameObject[] enemyTiles;                                 //Array of enemy prefabs.
 	public GameObject[] bossTiles;                                  //Array of enemy prefabs.
 	public GameObject[] outerWallTiles;                             //Array of outer tile prefabs.
 
 	public GameObject[] potionsTiles;
 
+	[Header("Level 1-5")]
 	public GameObject[] consumibleTiles1;							//Array of consumible prefabs.
 	public GameObject[] equipmentTiles1;							//Array of equipment prefabs.
 	public GameObject[] weaponsTiles1;                              //Array of weapons prefabs.
+	public GameObject[] enemyTiles1;                                //Array of enemy prefabs
 
+	[Header("Level 6-10")]
 	public GameObject[] consumibleTiles2;                           //Array of consumible prefabs.
 	public GameObject[] equipmentTiles2;                            //Array of equipment prefabs.
 	public GameObject[] weaponsTiles2;                              //Array of weapons prefabs.
+	public GameObject[] enemyTiles2;                                //Array of enemy prefabs
 
+	[Header("Level 11-15")]
 	public GameObject[] consumibleTiles3;                           //Array of consumible prefabs.
 	public GameObject[] equipmentTiles3;                            //Array of equipment prefabs.
 	public GameObject[] weaponsTiles3;                              //Array of weapons prefabs.
+	public GameObject[] enemyTiles3;                                //Array of enemy prefabs
 
+	[Header("Level 16-20")]
 	public GameObject[] consumibleTiles4;                           //Array of consumible prefabs.
 	public GameObject[] equipmentTiles4;                            //Array of equipment prefabs.
 	public GameObject[] weaponsTiles4;                              //Array of weapons prefabs.
+	public GameObject[] enemyTiles4;                                //Array of enemy prefabs
 
+	[Header("Level 21-25")]
 	public GameObject[] consumibleTiles5;                           //Array of consumible prefabs.
 	public GameObject[] equipmentTiles5;                            //Array of equipment prefabs.
 	public GameObject[] weaponsTiles5;                              //Array of weapons prefabs.
+	public GameObject[] enemyTiles5;                                //Array of enemy prefabs
+
+	[Header("Bosses minions")]
+	public GameObject[] minions;
 
 	private Transform boardHolder;                                  //A variable to store a reference to the transform of our Board object.
 	private List<Vector3> gridPositions = new List<Vector3>();      //A list of possible locations to place tiles.
@@ -123,13 +135,11 @@ public class BoardManager : MonoBehaviour
 		return randomPosition;
 	}
 
-
 	//LayoutObjectAtRandom accepts an array of game objects to choose from along with a minimum and maximum range for the number of objects to create.
 	void LayoutObjectAtRandom(GameObject[] tileArray, int minimum, int maximum)
 	{
 		LayoutObjectAtRandom(tileArray, minimum, maximum, false);
 	}
-
 
 	//LayoutObjectAtRandom accepts an array of game objects to choose from along with a minimum and maximum range for the number of objects to create.
 	void LayoutObjectAtRandom(GameObject[] tileArray, int minimum, int maximum, bool key)
@@ -167,18 +177,19 @@ public class BoardManager : MonoBehaviour
 		}
 
 		/*
+		//Testing Bosses
 		if (level == 1)
 		{
 			ReadXML("" + 5);
-		}
-		*/
-		///*
+			return;
+		}*/
+
+		//Boss Level
 		if (level % 5 == 0)
 		{
 			int bossRoom = level / 5;
-			ReadXML(""+ bossRoom);
+			ReadXML("" + bossRoom);
 		}
-		//*/
 		else
 		{
 			BoardSetup();
@@ -189,12 +200,6 @@ public class BoardManager : MonoBehaviour
 			LayoutObjectAtRandom(wallTiles, wallCount.minimum, wallCount.maximum);
 
 			SetupObjects(level);
-
-			//Determine number of enemies based on current level number, based on a logarithmic progression
-			int minEnemyCount = 2;
-			int maxEnemyCount = 6;
-			//Instantiate a random number of enemies based on minimum and maximum, at randomized positions.
-			LayoutObjectAtRandom(enemyTiles, minEnemyCount, maxEnemyCount, true);
 
 			//Instantiate the exit tile in the upper right hand corner of our game board
 			Instantiate(exit, new Vector3(columns - 1, rows - 1, 0f), Quaternion.identity);
@@ -312,13 +317,12 @@ public class BoardManager : MonoBehaviour
 					try
 					{
 						int n = int.Parse(rawType);
-						GameObject enemyTile = enemyTiles[n];
+						GameObject enemyTile = minions[n];
 						GameObject enemy = Instantiate(enemyTile, position, Quaternion.identity) as GameObject;
 						enemy.transform.SetParent(enemiesHolder);
 					}
 					catch (Exception e)
 					{
-						Debug.Log("NotANumber");
 					}
 				}
 
@@ -330,15 +334,21 @@ public class BoardManager : MonoBehaviour
 	private void SetupObjects(int level)
 	{
 		int random = Random.Range(0, 100);
-		if(level < 5)
+		//Determine number of enemies based on current level number, based on a logarithmic progression
+		int minEnemyCount = 2;
+		int maxEnemyCount = 6;
+
+		if (level < 5)
 		{
+			LayoutObjectAtRandom(enemyTiles1, minEnemyCount, maxEnemyCount, true);
 			LayoutObjectAtRandom(consumibleTiles1, foodCount.minimum, foodCount.maximum);
 			LayoutObjectAtRandom(equipmentTiles1, equipmentCount.minimum, equipmentCount.maximum);
 			LayoutObjectAtRandom(weaponsTiles1, weaponsCount.minimum, weaponsCount.maximum);
 		}
 		else if(level < 10)
 		{
-			if(random < 60)
+			LayoutObjectAtRandom(enemyTiles2, minEnemyCount, maxEnemyCount, true);
+			if (random < 60)
 			{
 				LayoutObjectAtRandom(consumibleTiles1, foodCount.minimum, foodCount.maximum);
 				LayoutObjectAtRandom(equipmentTiles1, equipmentCount.minimum, equipmentCount.maximum);
@@ -353,6 +363,7 @@ public class BoardManager : MonoBehaviour
 		}
 		else if (level < 15)
 		{
+			LayoutObjectAtRandom(enemyTiles3, minEnemyCount, maxEnemyCount, true);
 			if (random < 40)
 			{
 				LayoutObjectAtRandom(consumibleTiles1, foodCount.minimum, foodCount.maximum);
@@ -374,6 +385,7 @@ public class BoardManager : MonoBehaviour
 		}
 		else if (level < 20)
 		{
+			LayoutObjectAtRandom(enemyTiles4, minEnemyCount, maxEnemyCount, true);
 			if (random < 40)
 			{
 				LayoutObjectAtRandom(consumibleTiles2, foodCount.minimum, foodCount.maximum);
@@ -394,6 +406,7 @@ public class BoardManager : MonoBehaviour
 			}
 		} else
 		{
+			LayoutObjectAtRandom(enemyTiles5, minEnemyCount, maxEnemyCount, true);
 			if (random < 40)
 			{
 				LayoutObjectAtRandom(consumibleTiles3, foodCount.minimum, foodCount.maximum);

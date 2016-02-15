@@ -3,16 +3,21 @@ using System.Collections;
 
 public class Boss5 : Enemy {
 
+	[Header("Max Special Attacks")]
 	public int maxHealTimes = 5;
 
-	public override void MoveEnemy()
+	//The enemy copy the player stats
+	protected override void Start()
 	{
-		base.MoveEnemy();
+		base.Start();
+		Player p = target.GetComponent<Player>();
+		p.CopyValues(out maxLife, out str, out def, out dex, out spd, out luc);
+		this.life = this.maxLife;
 	}
 
 	protected override void AttemptMove<T>(int xDir, int yDir) 
 	{
-		Debug.Log(this.life + " _ " + this.maxLife / 4);
+		//If boss health is low and he can use the special attack
 		if(this.life < this.maxLife / 4 && maxHealTimes != 0)
 		{
 			HealSkill();
@@ -21,6 +26,7 @@ public class Boss5 : Enemy {
 		base.AttemptMove<T>(xDir, yDir);
 	}
 
+	//The boss heal hisself
 	private void HealSkill()
 	{
 		maxHealTimes--;
