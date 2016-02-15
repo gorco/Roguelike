@@ -18,7 +18,10 @@ public class GameManager : MonoBehaviour
 	private Text levelText;                                 //Text to display current level number.
 	private GameObject levelImage;                          //Image to block out level as levels are being set up, background for levelText.
 
-	private int level = 0;                                  //Current level number, expressed in game as "Day 1".
+	private Text finalText;                                 //Text to display current level number.
+	private GameObject finalImage;                          //Image to block out level as levels are being set up, background for levelText.
+
+	private int level = 0;                                  //Current level number, expressed in game as "Floor -1".
 	private List<Enemy> enemies;							//List of all Enemy units, used to issue them move commands.
 	private bool enemiesMoving;                             //Boolean to check if enemies are moving.
 
@@ -39,6 +42,10 @@ public class GameManager : MonoBehaviour
 	public List<float> itemsBonus = new List<float>();
 
 	private List<int> StatsBonus = new List<int>();
+
+	private string itemSkills = "ItemSkills";
+	private string activeSkills = "ActiveSkills";
+	private string statsSkills = "StatsSkills";
 
 	void Awake()
 	{
@@ -84,31 +91,65 @@ public class GameManager : MonoBehaviour
 	//This is called each time a scene is loaded.
 	void OnLevelWasLoaded(int index)
 	{
-		Debug.Log("OnLevelWasLoaded"+index);
 		level++;
 		InitGame();
-		
 	}
 
 	//Initializes the game for each level.
 	void InitGame()
 	{
 		doingSetup = true;
-		if(level == 1)
+        if (level == 1)
 		{
 			GenerateHero();
 		}
 
-		levelImage = GameObject.Find("LevelImage");
-		levelText = GameObject.Find("LevelText").GetComponent<Text>();
-		levelText.text = "Floor - " + level;
-		levelImage.SetActive(true);
+		if (level == 26)
+		{
+			levelImage = GameObject.Find("LevelImage");
+			levelImage.SetActive(false);
+			
+			finalImage = GameObject.Find("FinalImage");
+			finalImage.SetActive(true);
+			finalText = GameObject.Find("FinalText").GetComponent<Text>();
 
-		Invoke("HideLevelImage", levelStartDelay);
+			finalImage.SetActive(true);
 
-		enemies.Clear();
+			Invoke("ResetSkills", levelStartDelay);
+			Invoke("End", levelStartDelay*2.5f);
+		}
+		else
+		{
+			finalImage = GameObject.Find("FinalImage");
+			finalImage.SetActive(false);
+			levelImage = GameObject.Find("LevelImage");
+			levelText = GameObject.Find("LevelText").GetComponent<Text>();
 
-		boardScript.SetupScene(level);
+			levelText.text = "Floor -" + level;
+			levelImage.SetActive(true);
+
+			Invoke("HideLevelImage", levelStartDelay);
+
+			enemies.Clear();
+
+			boardScript.SetupScene(level);
+		}
+	}
+
+	private void ResetSkills()
+	{
+		finalText.text = "But, Ups!!!! \n \n Reseting your progress...";
+		Money.M.ResetMoney();
+		PlayerPrefs.SetString(statsSkills, "");
+		PlayerPrefs.SetString(itemSkills, "");
+		PlayerPrefs.SetString(activeSkills, "");
+		PlayerPrefs.Save();
+	}
+
+	private void End()
+	{
+		finalText.text = "Try again! \n \n ;)";
+		finalImage.transform.GetChild(1).gameObject.SetActive(true);
 	}
 
 	//Hides black image used between levels
@@ -146,10 +187,11 @@ public class GameManager : MonoBehaviour
 	public void GameOver()
 	{
 		//Set levelText to display number of levels passed and game over message
-		levelText.text = "In the level - " + level + ", you died.";
+		levelText.text = "In the floor -" + level + ", you died.";
 
 		//Enable black background image gameObject.
 		levelImage.SetActive(true);
+		levelImage.transform.GetChild(1).gameObject.SetActive(true);
 
 		//Disable this GameManager.
 		enabled = false;
@@ -186,7 +228,7 @@ public class GameManager : MonoBehaviour
 
 	private void ChargeBonuses()
 	{
-		string content = PlayerPrefs.GetString("StatsSkills");
+		string content = PlayerPrefs.GetString(statsSkills);
 		if (content != string.Empty)
 		{
 			string[] splitContent = content.Split(';');
@@ -207,7 +249,7 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
-		content = PlayerPrefs.GetString("ItemSkills");
+		content = PlayerPrefs.GetString(itemSkills);
 		if (content != string.Empty)
 		{
 			string[] splitContent = content.Split(';');

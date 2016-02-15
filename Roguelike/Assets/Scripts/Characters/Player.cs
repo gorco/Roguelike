@@ -326,7 +326,6 @@ public class Player : MovingObject, Destuctible
 		{
 			damage.ShowDamage("dodge");
 		}
-		
 
 		CheckIfGameOver();
 	}

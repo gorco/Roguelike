@@ -6,8 +6,8 @@ using System;
 
 public class Slot : MonoBehaviour, IPointerClickHandler {
 
-	private Image img;
-	private Item item;
+	public Image img;
+	public Item item;
 
 	private bool specialized;
 	private ItemType spezialitation;
@@ -50,16 +50,15 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 		{
 			if (!specialized || spezialitation == newItem.itemType)
 			{
-				if(this.img == null)
+				if (this.img == null)
 				{
 					this.img = this.transform.GetChild(0).GetComponent<Image>();
 				}
 				this.img.enabled = true;
-				this.img.sprite = item.itemSprite;
+				this.img.sprite = newItem.itemSprite;
 				return true;
 			}
 		}
-
 		else
 		{
 			this.img.sprite = null;
@@ -78,7 +77,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler {
 	public void RemoveItem()
 	{
 		this.item = null;
-		img.enabled = false;
+		this.img.enabled = false;
 	}
 
 	public bool IsEmpty()

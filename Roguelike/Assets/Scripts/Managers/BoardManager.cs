@@ -176,7 +176,6 @@ public class BoardManager : MonoBehaviour
 			PlayerPrefs.SetString("EquipmentContent", "");
 		}
 
-		
 		//Testing Bosses
 		/*
 		if (level == 1)

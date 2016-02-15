@@ -16,7 +16,7 @@ public class Inventory : MonoBehaviour {
 	public int topPad = 2;
 
 	private float inventoryW, inventoryH;
-	private List<Slot> slotsList;
+	private List<Slot> slotsList = new List<Slot>();
 
 	[Header("Hover")]
 	public GameObject iconPrefab;
@@ -45,7 +45,7 @@ public class Inventory : MonoBehaviour {
 
 	private Vector3 oneSize = new Vector3(1, 1, 1);
 
-	private List<Slot> equipmentSlots;
+	private static List<Slot> equipmentSlots = new List<Slot>();
 
 	[Header("Potions")]
 	public GameObject[] potionsTiles;
@@ -81,8 +81,6 @@ public class Inventory : MonoBehaviour {
 	void Awake ()
 	{
 		Inv = this;
-		slotsList = new List<Slot>();
-		equipmentSlots = new List<Slot>();
 
 		tooltip = tooltipObject;
 		sizeText = sizeTextObject;
@@ -366,14 +364,17 @@ public class Inventory : MonoBehaviour {
 			{
 				from.ChangeItem(tmp);
 			}
+
 			if (!from.IsEmpty())
 			{
 				from.HideItem(false);
-			}
-			if (to.IsSpecialized())
+			} 
+
+			if (to.IsSpecialized() || from.IsSpecialized())
 			{
 				CalcStats();
 			}
+
 			ResetInventoryState();
 		}
 	}
@@ -418,11 +419,11 @@ public class Inventory : MonoBehaviour {
 		int spd = 0;
 		int luc = 0;
 
-		foreach (Slot slot in equipmentSlots)
+		for (int i = 0; i < equipmentSlots.Count; i++)
 		{
-			if (!slot.IsEmpty())
+			if (!equipmentSlots[i].IsEmpty())
 			{
-				Item item = slot.GetCurrentItem();
+				Item item = equipmentSlots[i].GetCurrentItem();
 				maxLife += item.maxLife;
 				str += item.str;
 				def += item.def;

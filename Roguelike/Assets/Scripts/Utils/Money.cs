@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System;
 
 public class Money : MonoBehaviour {
 
@@ -54,5 +55,11 @@ public class Money : MonoBehaviour {
 	public int GetMoney()
 	{
 		return coins;
+	}
+
+	internal void ResetMoney()
+	{
+		PlayerPrefs.SetString("Money", "0");
+		PlayerPrefs.Save();
 	}
 }
