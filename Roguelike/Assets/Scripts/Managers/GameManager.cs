@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
 	{
 		ChargeBonuses();
 		playerHungry = 0;
-		/*
+		
 		playerMaxHungry = 40 + StatsBonus[0];
 		playerMaxLifePoints = 100 + StatsBonus[1];
 		playerLifePoints = 100 + StatsBonus[1];
@@ -68,7 +68,8 @@ public class GameManager : MonoBehaviour
 		playerDexPoints = 1 + StatsBonus[4];
 		playerSpdPoints = 1 + StatsBonus[5];
 		playerLucPoints = 1 + StatsBonus[6];
-		*/
+		
+		/*
 		playerMaxHungry = 40 + StatsBonus[0];
 		playerMaxLifePoints = 1100 + StatsBonus[1];
 		playerLifePoints = 1100 + StatsBonus[1];
@@ -77,6 +78,7 @@ public class GameManager : MonoBehaviour
 		playerDexPoints = 70 + StatsBonus[4];
 		playerSpdPoints = 70 + StatsBonus[5];
 		playerLucPoints = 50 + StatsBonus[6];
+		*/
 	}
 
 	//This is called each time a scene is loaded.
