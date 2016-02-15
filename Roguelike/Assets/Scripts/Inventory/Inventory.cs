@@ -249,7 +249,7 @@ public class Inventory : MonoBehaviour {
 	{
 		Slot tmpSlot = slot.GetComponent<Slot>();
 		
-		if(this.enabled = true && !tmpSlot.IsEmpty() && hoverObject == null)
+		if(this.enabled == true && !tmpSlot.IsEmpty() && hoverObject == null)
 		{
 			visualText.text = tmpSlot.GetCurrentItem().GetTooltip();
 			sizeText.text = visualText.text;

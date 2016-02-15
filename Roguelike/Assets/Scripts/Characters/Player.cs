@@ -62,7 +62,8 @@ public class Player : MovingObject, Destuctible
 		luc = GameManager.instance.playerLucPoints;
 
 		base.Start();
-		Inventory.Inv.LoadInventory();	
+		Inventory.Inv.LoadInventory();
+		HandleHungry();
 	}
 
 
@@ -150,6 +151,7 @@ public class Player : MovingObject, Destuctible
 	private void HandleHungry()
 	{
 		int h = maxHungry - hungry;
+		Debug.Log(h+" "+maxHungry+" "+hungry);
 		if (h > maxHungry * .5f) //More hungry than 50%
 		{
 			hungryIcon.color = new Color32((byte)MapValues(h, maxHungry / 2, maxHungry, 255, 0), 255, 0, 255);

@@ -13,6 +13,7 @@ public class Enemy : MovingObject, Destuctible
 	public AudioClip enemyAttack2;
 
 	public RectTransform healthBar;
+	public int money = 1;
 
 	private bool key = false;
 
@@ -116,6 +117,7 @@ public class Enemy : MovingObject, Destuctible
 	{
 		if (life <= 0)
 		{
+			Money.M.MoreMoney(this.money);
 			if (this.key)
 			{
 				this.key = false;
