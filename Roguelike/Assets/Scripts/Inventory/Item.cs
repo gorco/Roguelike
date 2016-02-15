@@ -85,6 +85,15 @@ public class Item : MonoBehaviour {
 
 	public string GetTooltip()
 	{
+		Player p = GameObject.Find("Player").GetComponent<Player>();
+        int hungryBonus = Mathf.RoundToInt(hungry * p.GetSkillBonus(0));
+		int lifeBonus = Mathf.RoundToInt(life * p.GetSkillBonus(1));
+		int strBonus = Mathf.RoundToInt(str * p.GetSkillBonus(2));
+		int defBonus = Mathf.RoundToInt(def * p.GetSkillBonus(3));
+		int dexBonus = Mathf.RoundToInt(dex * p.GetSkillBonus(4));
+		int spdBonus = Mathf.RoundToInt(spd * p.GetSkillBonus(5));
+		int lucBonus = Mathf.RoundToInt(luc * p.GetSkillBonus(6));
+
 		string stats = string.Empty;
 		string color = string.Empty;
 		string newLine = string.Empty;
@@ -113,10 +122,18 @@ public class Item : MonoBehaviour {
 		if (life > 0)
 		{
 			stats += "\n Heal " + life.ToString() + " points of life";
+			if(life != lifeBonus)
+			{
+				stats += " (" + lifeBonus + " with skills)";
+			}
 		}
 		if (hungry > 0)
 		{
 			stats += "\n Takes away hunger ("+hungry+" points)";
+			if (hungry != hungryBonus)
+			{
+				stats += " (" + hungryBonus + " with skills)";
+			}
 		}
 		if (maxLife > 0)
 		{
@@ -125,22 +142,42 @@ public class Item : MonoBehaviour {
 		if (str > 0)
 		{
 			stats += "\n+" + str.ToString() + " Strength";
+			if (str != strBonus)
+			{
+				stats += " (" + strBonus + " with skills)";
+			}
 		}
 		if (def > 0)
 		{
 			stats += "\n+" + def.ToString() + " Defense";
+			if (def != defBonus)
+			{
+				stats += " (" + defBonus + " with skills)";
+			}
 		}
 		if (dex > 0)
 		{
 			stats += "\n+" + dex.ToString() + " Dexterity";
+			if (dex != dexBonus)
+			{
+				stats += " (" + dexBonus + " with skills)";
+			}
 		}
 		if (spd > 0)
 		{
 			stats += "\n+" + spd.ToString() + " Speed";
+			if (spd != spdBonus)
+			{
+				stats += " (" + spdBonus + " with skills)";
+			}
 		}
 		if (luc > 0)
 		{
 			stats += "\n+" + luc.ToString() + " Luck";
+			if (luc != lucBonus)
+			{
+				stats += " (" + lucBonus + " with skills)";
+			}
 		}
 
 		return string.Format("<color=" + color + "><size=16>{0}</size></color><size=14><i><color=lime>"+newLine+"{1}</color></i>{2}</size>",itemName,itemInfo,stats);

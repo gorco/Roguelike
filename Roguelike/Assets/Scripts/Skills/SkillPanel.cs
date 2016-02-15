@@ -15,11 +15,22 @@ public class SkillPanel : MonoBehaviour
 
 	private int topPad = 2;
 
+	private SkillStore auxSlot;
+
+	private List<SkillStore> slotsList = new List<SkillStore>();
+
 	void Start()
 	{
 		tooltip = tooltipObject;
 		sizeText = sizeTextObject;
 		visualText = visualTextObject;
+
+		for(int i = 0; i < this.transform.childCount; i++)
+		{
+			slotsList.Add(this.transform.GetChild(i).GetComponent<SkillStore>());
+		}
+
+		LoadSkillLevels();
 	}
 
 	public void ShowTooltip(GameObject slot)
@@ -32,71 +43,72 @@ public class SkillPanel : MonoBehaviour
 			sizeText.text = visualText.text;
 
 			tooltip.SetActive(true);
+			auxSlot = tmpSlot;
 
-			float xPos = slot.transform.position.x + 1;
+			
 			float yPos = slot.transform.position.y - slot.GetComponent<RectTransform>().sizeDelta.y - topPad;
-
-			tooltip.transform.position = new Vector2(xPos, yPos);
+			if (tmpSlot.typeSkill == TypeSkill.ITEM)
+			{
+				float xPos = slot.transform.position.x + slot.GetComponent<RectTransform>().sizeDelta.x;
+				tooltip.transform.position = new Vector2(xPos, yPos);
+				Invoke("CorrectPosition", 0.05f);
+			} else
+			{
+				float xPos = slot.transform.position.x + 1;
+				tooltip.transform.position = new Vector2(xPos, yPos);
+			}
 		}
+	}
 
+	private void CorrectPosition()
+	{
+		tooltip.transform.position = new Vector2(tooltip.transform.position.x - sizeText.GetComponent<RectTransform>().sizeDelta.x, tooltip.transform.position.y);
 	}
 
 	public void HideTooltip(GameObject slot)
 	{
+		auxSlot = null;
 		tooltip.SetActive(false);
 	}
 
-	public void SavePanel()
+	public void SaveSkillLevels()
 	{
-		/*
 		string content = string.Empty;
 
 		for (int i = 0; i < slotsList.Count; i++)
 		{
-			if (!slotsList[i].IsEmpty())
-			{
-				Item item = slotsList[i].GetCurrentItem();
-				//[0] = slotPosition
-				//[1] = itemName
-				//[2] = itemType
-				//[3] = itemPower
-				content += i + "/" + item.itemName + "/" + item.itemType.ToString() + "/" + item.power + ";";
-			}
-			else
-			{
-				content += i + "/" + "empty;";
-			}
+			content += slotsList[i].namePosition + "/" + slotsList[i].GetLevel()+"/"+slotsList[i].GetCurrentBonus().ToString()+";";
 		}
 
-		PlayerPrefs.SetString("InventoryContent", content);
+		PlayerPrefs.SetString(this.name, content);
 		PlayerPrefs.Save();
-		*/
 	}
 
-	public void LoadInventory()
+	public void LoadSkillLevels()
 	{
-		/*
-		string equipment = PlayerPrefs.GetString("EquipmentContent");
-		if (equipment != string.Empty)
+		string content = PlayerPrefs.GetString(this.name);
+		if (content != string.Empty)
 		{
-			string[] splitEquipment = equipment.Split(';');
-			foreach (string savedItem in splitEquipment)
+			string[] splitContent = content.Split(';');
+			foreach (string line in splitContent)
 			{
-				if (!string.IsNullOrEmpty(savedItem))
+				if (!string.IsNullOrEmpty(line))
 				{
-					string[] splitValues = savedItem.Split('/');
-					if (!splitValues[1].Equals("empty"))
+					string[] splitValues = line.Split('/');
+					int l = int.Parse(splitValues[1]);
+					if (l!=0)
 					{
-						Item item = GetItemInstance(splitValues[1], splitValues[2], int.Parse(splitValues[3]));
-						if (item != null)
+						int pos = int.Parse(splitValues[0]);
+						foreach(SkillStore s in slotsList)
 						{
-							equipmentSlots[int.Parse(splitValues[0])].AddItem(item);
-							item.gameObject.SetActive(false);
+                            if (s.namePosition == pos)
+							{
+								s.SetLevel(l);
+							}
 						}
 					}
 				}
 			}
 		}
-		*/
 	}
 }

@@ -14,11 +14,11 @@ public class SkillStore : MonoBehaviour, IPointerClickHandler
 	public int baseCost = 100;
 	public float mulCost = 2f;
 	public bool intBonus = true;
-	public int baseValue = 10;
+	public float baseValue = 10;
 	public float mulValue = 1.3f;
 
 	public Text level;
-	public string skillName;
+	public int namePosition;
 	public string info;
 
 	private int cost;
@@ -53,12 +53,40 @@ public class SkillStore : MonoBehaviour, IPointerClickHandler
         if (Money.M.GetMoney() > NextLevelCost()) {
 			Money.M.SpendMoney(money);
 			UpdateSkillLevel();
+			this.transform.GetComponentInParent<SkillPanel>().SaveSkillLevels();
         }
+	}
+
+	public int GetLevel()
+	{
+		return currentLevel;
+	}
+
+	public void SetLevel(int level)
+	{
+		currentLevel = level;
+		this.level.text = "" + currentLevel;
+	}
+
+	public float GetCurrentBonus()
+	{
+		return LevelBonus(currentLevel);
 	}
 
 	private float LevelBonus(int level)
 	{
-		float value = baseValue * Mathf.Pow(mulValue, level);
+		if(level == 0 && typeSkill.Equals(TypeSkill.STAT))
+		{
+			return 0f;
+		}
+
+		int l = 0;
+		if (typeSkill.Equals(TypeSkill.STAT))
+		{
+			l = -1;
+		}
+
+        float value = baseValue * Mathf.Pow(mulValue, level + l);
 		if (intBonus)
 		{
 			value = Mathf.RoundToInt(value);
@@ -68,33 +96,39 @@ public class SkillStore : MonoBehaviour, IPointerClickHandler
 
 	private int NextLevelCost()
 	{
-		return Mathf.RoundToInt(baseCost * Mathf.Pow(mulCost, currentLevel + 1));
+		return Mathf.RoundToInt(baseCost * Mathf.Pow(mulCost, currentLevel));
     }
 
 	public string GetCurrentSkillInfo()
 	{
 		string newLine = string.Empty;
 		string color = "black";
+		string[] names = { };
 		switch (typeSkill)
 		{
 			case TypeSkill.ACTIVE:
 				color = "red";
+				names = SkillNames.ActiveSkills;
 				break;
 			case TypeSkill.ITEM:
-				color = "blue";
+				color = "cyan";
+				names = SkillNames.ItemSkills;
 				break;
 			case TypeSkill.STAT:
 				color = "lime";
+				names = SkillNames.StatsSkills;
 				break;
 		}
 		string desc = info.Replace("$", "" + LevelBonus(currentLevel));
 		string next = info.Replace("$", "" + LevelBonus(currentLevel+1));
+
+		string name = names[namePosition];
 
 		return string.Format("<color="+color+"><size=16>{0}</size></color>"+
 			"<size=14><i><color=white>" + '\n' + "{1}</color></i></size>" +
 			"<size=14><i><color=" + color + ">" +'\n'+'\n' + "The Next Level: </color></i></size>"+
 			"<size=14><i><color=white>" + '\n' + "{2}</color></i></size>"+
             "<size=12><color=yellow>" + '\n' + '\n' + "Cost: {3}</color></size>", 
-			skillName, desc, next, NextLevelCost());
+			name, desc, next, NextLevelCost());
 	}
 }

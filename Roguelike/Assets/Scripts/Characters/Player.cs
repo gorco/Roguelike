@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,6 +42,8 @@ public class Player : MovingObject, Destuctible
 
 	public CanvasGroup KeyNeeded;
 
+	private List<float> itemsBonus = new List<float>();
+
 	//Start overrides the Start function of MovingObject
 	protected override void Start()
 	{
@@ -60,12 +62,12 @@ public class Player : MovingObject, Destuctible
 		dex = GameManager.instance.playerDexPoints;
 		spd = GameManager.instance.playerSpdPoints;
 		luc = GameManager.instance.playerLucPoints;
+		itemsBonus = GameManager.instance.itemsBonus;
 
 		base.Start();
 		Inventory.Inv.LoadInventory();
 		HandleHungry();
 	}
-
 
 	//This function is called when the behaviour becomes disabled or inactive.
 	private void OnDisable()
@@ -111,6 +113,11 @@ public class Player : MovingObject, Destuctible
 		}
 	}
 
+	public float GetSkillBonus(int pos)
+	{
+		return itemsBonus[pos];
+	}
+
 	private void SetBothHealth(int current, int max)
 	{
 		maxLife = max;
@@ -151,7 +158,6 @@ public class Player : MovingObject, Destuctible
 	private void HandleHungry()
 	{
 		int h = maxHungry - hungry;
-		Debug.Log(h+" "+maxHungry+" "+hungry);
 		if (h > maxHungry * .5f) //More hungry than 50%
 		{
 			hungryIcon.color = new Color32((byte)MapValues(h, maxHungry / 2, maxHungry, 255, 0), 255, 0, 255);
@@ -193,6 +199,8 @@ public class Player : MovingObject, Destuctible
 
 	public void Eat(int hungry)
 	{
+		int hungryBonus = Mathf.RoundToInt(hungry * GetSkillBonus(0));
+		hungry += hungryBonus;
 		this.hungry = Mathf.Max(0,this.hungry-hungry);
 		HandleHungry();
 	}
@@ -259,6 +267,8 @@ public class Player : MovingObject, Destuctible
 
 	public void ObtainLife(int life)
 	{
+		int lifeBonus = Mathf.RoundToInt(life * GetSkillBonus(1));
+		life += lifeBonus;
 		if (this.life + life <= this.totalMaxLife)
 		{
 			SetHealth(this.life + life);
@@ -330,12 +340,18 @@ public class Player : MovingObject, Destuctible
 
 	public void SetStats(int mLife, int str, int def, int dex, int spd, int luc)
 	{
+		int strBonus = Mathf.RoundToInt(str * GetSkillBonus(2));
+		int defBonus = Mathf.RoundToInt(def * GetSkillBonus(3));
+		int dexBonus = Mathf.RoundToInt(dex * GetSkillBonus(4));
+		int spdBonus = Mathf.RoundToInt(spd * GetSkillBonus(5));
+		int lucBonus = Mathf.RoundToInt(luc * GetSkillBonus(6));
+
 		this.totalMaxLife = this.maxLife + mLife;
-		this.totalStr = this.str + str;
-		this.totalDef = this.def + def;
-		this.totalDex = this.dex + dex;
-		this.totalSpd = this.spd + spd;
-		this.totalLuc = this.luc + luc;
+		this.totalStr = this.str + strBonus;
+		this.totalDef = this.def + defBonus;
+		this.totalDex = this.dex + dexBonus;
+		this.totalSpd = this.spd + spdBonus;
+		this.totalLuc = this.luc + lucBonus;
 
 		Inventory.Inv.updateStatsText(string.Format("Life: {0}\nStrength: {1}\nDefense: {2}\nDexterity: {3}\nSpeed: {4}\nLuck: {5}",
 			this.totalMaxLife, this.totalStr, this.totalDef, this.totalDex, this.totalSpd, this.totalLuc));

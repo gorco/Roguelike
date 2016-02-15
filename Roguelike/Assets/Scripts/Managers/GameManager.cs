@@ -33,6 +33,9 @@ public class GameManager : MonoBehaviour
 	public int playerDexPoints;
 	public int playerSpdPoints;
 	public int playerLucPoints;
+	public List<float> itemsBonus = new List<float>();
+
+	private List<int> StatsBonus = new List<int>();
 
 	void Awake()
 	{
@@ -46,23 +49,21 @@ public class GameManager : MonoBehaviour
 		
 		enemies = new List<Enemy>();
 		
-
 		boardScript = GetComponent<BoardManager>();
-		//level++;
-		//InitGame();
 	}
 
 	void GenerateHero()
 	{
+		ChargeBonuses();
 		playerHungry = 0;
-		playerMaxHungry = 40;
-		playerMaxLifePoints = 1000;
-		playerLifePoints = 1000;
-        playerStrPoints = 15;
-		playerDefPoints = 10;
-		playerDexPoints = 10;
-		playerSpdPoints = 10;
-		playerLucPoints = 10;
+		playerMaxHungry = 40 + StatsBonus[0];
+		playerMaxLifePoints = 100 + StatsBonus[1];
+		playerLifePoints = 100 + StatsBonus[1];
+        playerStrPoints = 5 + StatsBonus[2];
+		playerDefPoints = 1 + StatsBonus[3];
+		playerDexPoints = 1 + StatsBonus[4];
+		playerSpdPoints = 1 + StatsBonus[5];
+		playerLucPoints = 1 + StatsBonus[6];
 	}
 
 	//This is called each time a scene is loaded.
@@ -166,5 +167,50 @@ public class GameManager : MonoBehaviour
 
 		playersTurn = true;
 		enemiesMoving = false;
+	}
+
+	private void ChargeBonuses()
+	{
+		string content = PlayerPrefs.GetString("StatsSkills");
+		if (content != string.Empty)
+		{
+			string[] splitContent = content.Split(';');
+			foreach (string line in splitContent)
+			{
+				if (!string.IsNullOrEmpty(line))
+				{
+					string[] splitValues = line.Split('/');
+					float bonus = float.Parse(splitValues[2]);
+					this.StatsBonus.Add(Mathf.RoundToInt(bonus));
+				}
+			}
+		} else
+		{
+			for(int i = 0; i<7; i++)
+			{
+				StatsBonus.Add(0);
+			}
+		}
+
+		content = PlayerPrefs.GetString("ItemSkills");
+		if (content != string.Empty)
+		{
+			string[] splitContent = content.Split(';');
+			foreach (string line in splitContent)
+			{
+				if (!string.IsNullOrEmpty(line))
+				{
+					string[] splitValues = line.Split('/');
+					float bonus = float.Parse(splitValues[2]);
+					this.itemsBonus.Add(bonus);
+				}
+			}
+		} else
+		{
+			for (int i = 0; i < 7; i++)
+			{
+				itemsBonus.Add(1f);
+			}
+		}
 	}
 }

@@ -385,11 +385,13 @@ public class Inventory : MonoBehaviour {
 	{
 		if (open && canvasGroup.alpha < 0.5f)
 		{
+			this.enabled = true;
 			canvasGroup.alpha = 1f;
 			canvasGroup.interactable = true;
 			canvasGroup.blocksRaycasts = true;
 		} else if(!open && canvasGroup.alpha >= 0.5f)
 		{
+			this.enabled = false;
 			canvasGroup.alpha = 0f;
 			canvasGroup.interactable = false;
 			canvasGroup.blocksRaycasts = false;
